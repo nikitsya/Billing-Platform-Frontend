@@ -56,7 +56,7 @@
 
 <button id="allCustomersButton" type="button">All customers</button>
 
-<div id="result"></div>
+<div aria-live="polite" id="result" role="status"></div>
 
 <script>
     const customerEndpoint = "https://billing-platform-api.onrender.com/api/v1/customers";
@@ -67,6 +67,10 @@
     const allCustomers = document.getElementById("allCustomersButton");
 
     const result = document.getElementById("result");
+
+    function showBackendStartingMessage() {
+        result.textContent = "Starting backend... this may take up to 60 seconds on the first request.";
+    }
 
     async function createCustomer(payload) {
         const response = await fetch(customerEndpoint, {
@@ -89,6 +93,7 @@
 
     customer_form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        showBackendStartingMessage();
 
         const payload = {
             name: document.getElementById("name").value,
@@ -112,6 +117,8 @@
     });
 
     async function checkPing() {
+        showBackendStartingMessage();
+
         try {
             const response = await fetch(pingEndpoint);
             const body = await response.text();
@@ -132,6 +139,8 @@
     pingButton.addEventListener("click", checkPing);
 
     async function getAllCustomers() {
+        showBackendStartingMessage();
+
         try {
             const response = await fetch(customerEndpoint);
             const body = await response.text();
