@@ -1,0 +1,25 @@
+body {
+    font-family: sans-serif;
+    max-width: 520px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+form {
+    display: grid;
+    gap: 12px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    width: 520px;
+}
+
+#result {
+    margin-top: 16px;
+    white-space: pre-wrap;
+}
