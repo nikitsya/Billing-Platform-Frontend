@@ -1,25 +1,338 @@
+:root {
+    color-scheme: light;
+    --ink: #13251d;
+    --muted: #5e6e65;
+    --paper: #f4f0e6;
+    --surface: #fffdf7;
+    --green: #0b6b3a;
+    --green-dark: #074728;
+    --green-light: #d7eadc;
+    --red: #c82f36;
+    --red-dark: #8f1e26;
+    --red-light: #f6d9d8;
+    --line: #173b29;
+    --shadow: 8px 8px 0 var(--green-dark);
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    background: var(--paper);
+}
+
 body {
-    font-family: sans-serif;
-    max-width: 520px;
-    margin: 40px auto;
-    padding: 0 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+    grid-template-areas:
+        "ping ping"
+        "title result"
+        "form result"
+        "actions result";
+    align-content: center;
+    gap: 22px 48px;
+    width: min(1120px, calc(100% - 48px));
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: 48px 0;
+    color: var(--ink);
+    background: var(--paper);
+}
+
+body::before {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: 14px;
+    background: var(--green);
+    border-bottom: 5px solid var(--red);
+    content: "";
+}
+
+h1 {
+    grid-area: title;
+    max-width: 620px;
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(3rem, 8vw, 6.8rem);
+    font-weight: 700;
+    line-height: 0.84;
+    letter-spacing: -0.075em;
+    color: var(--green-dark);
+}
+
+h1::before {
+    display: block;
+    width: max-content;
+    margin-bottom: 18px;
+    padding: 7px 10px 5px;
+    color: var(--surface);
+    background: var(--red);
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    content: "Billing platform";
+}
+
+#pingButton {
+    grid-area: ping;
+    justify-self: end;
+    width: auto;
+    min-width: 108px;
+    margin-bottom: 24px;
+    color: var(--green-dark);
+    background: transparent;
+    border-color: var(--green);
+    box-shadow: none;
+}
+
+#pingButton::before {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 9px;
+    background: var(--red);
+    border-radius: 50%;
+    content: "";
 }
 
 form {
+    grid-area: form;
     display: grid;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    padding: 14px;
+    background: var(--green);
+    border: 3px solid var(--green-dark);
+    box-shadow: var(--shadow);
 }
 
-input, button {
-    padding: 10px;
-    font-size: 16px;
+label:empty {
+    display: none;
+}
+
+input,
+button {
+    min-height: 52px;
+    border: 2px solid var(--line);
+    border-radius: 0;
+    font: inherit;
+}
+
+input {
+    width: 100%;
+    min-width: 0;
+    padding: 0 16px;
+    color: var(--ink);
+    background: var(--surface);
+    outline: 0;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+input::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+
+input:hover {
+    background: var(--green-light);
+}
+
+input:focus {
+    background: var(--surface);
+    box-shadow: 4px 4px 0 var(--red);
+    transform: translate(-2px, -2px);
 }
 
 button {
-    width: 520px;
+    width: auto;
+    padding: 0 20px;
+    color: var(--surface);
+    background: var(--red);
+    border-color: var(--red-dark);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--red-dark);
+    transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+button:hover {
+    color: var(--surface);
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    box-shadow: 4px 4px 0 var(--red);
+    transform: translate(-2px, -2px);
+}
+
+button:active {
+    box-shadow: 0 0 0 transparent;
+    transform: translate(2px, 2px);
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 4px solid var(--red-light);
+    outline-offset: 3px;
+}
+
+#allCustomersButton {
+    grid-area: actions;
+    justify-self: start;
+}
+
+#allProductsButton {
+    grid-area: actions;
+    justify-self: center;
+}
+
+#allPricesButton {
+    grid-area: actions;
+    justify-self: end;
+}
+
+#allCustomersButton,
+#allProductsButton,
+#allPricesButton {
+    min-width: 31%;
+    color: var(--green-dark);
+    background: transparent;
+    border-color: var(--green-dark);
+    box-shadow: 4px 4px 0 var(--green-light);
+}
+
+#allCustomersButton:hover,
+#allProductsButton:hover,
+#allPricesButton:hover {
+    color: var(--surface);
+    background: var(--red);
+    border-color: var(--red-dark);
+    box-shadow: 4px 4px 0 var(--green-dark);
 }
 
 #result {
-    margin-top: 16px;
+    grid-area: result;
+    align-self: start;
+    min-width: 0;
+    width: 100%;
+    height: clamp(430px, 62svh, 620px);
+    padding: 64px 24px 24px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--red) var(--green-dark);
+    scrollbar-width: thin;
+    color: var(--green-light);
+    background: var(--green-dark);
+    border: 3px solid var(--green-dark);
+    box-shadow: 9px 9px 0 var(--red);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.84rem;
+    line-height: 1.65;
     white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#result::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+#result::-webkit-scrollbar-track {
+    background: var(--green-dark);
+}
+
+#result::-webkit-scrollbar-thumb {
+    background: var(--red);
+    border: 2px solid var(--green-dark);
+}
+
+#result::before {
+    display: block;
+    margin: -44px 0 24px;
+    padding-bottom: 12px;
+    color: var(--surface);
+    border-bottom: 1px solid #4f8b69;
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    content: "API response";
+}
+
+@media (max-width: 860px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "ping"
+            "title"
+            "form"
+            "actions"
+            "result";
+        align-content: start;
+        gap: 20px;
+        width: min(680px, calc(100% - 32px));
+        padding: 32px 0 48px;
+    }
+
+    #pingButton {
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        max-width: 560px;
+    }
+
+    #result {
+        height: clamp(300px, 52svh, 460px);
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 580px) {
+    body {
+        width: min(100% - 24px, 440px);
+        padding-top: 26px;
+    }
+
+    h1 {
+        font-size: clamp(3rem, 17vw, 4.8rem);
+    }
+
+    form {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        box-shadow: 5px 5px 0 var(--green-dark);
+    }
+
+    form button {
+        width: 100%;
+    }
+
+    #allCustomersButton,
+    #allProductsButton,
+    #allPricesButton {
+        grid-area: auto;
+        justify-self: stretch;
+        width: 100%;
+    }
+
+    #result {
+        box-shadow: 5px 5px 0 var(--red);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
