@@ -208,7 +208,7 @@ p {
 h1 {
     margin: 0;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-size: clamp(2rem, 3vw, 2.8rem);
     line-height: 0.95;
     letter-spacing: -0.05em;
 }
@@ -217,12 +217,12 @@ h1 {
     max-width: 310px;
     margin: 0 0 4px;
     color: var(--green-light);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     line-height: 1.6;
 }
 
 .section {
-    padding: 72px clamp(28px, 5vw, 80px);
+    padding: 56px clamp(28px, 5vw, 80px);
     border-bottom: 1px solid var(--line);
     scroll-margin-top: 0;
 }
@@ -232,7 +232,7 @@ h1 {
     align-items: end;
     justify-content: space-between;
     gap: 32px;
-    margin-bottom: 32px;
+    margin-bottom: 26px;
 }
 
 .section-number,
@@ -244,9 +244,9 @@ h1 {
 h2 {
     margin: 0;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2rem, 4vw, 3.45rem);
-    line-height: 0.95;
-    letter-spacing: -0.04em;
+    font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
     color: var(--green-dark);
 }
 
@@ -271,7 +271,7 @@ h2 {
 
 .metric {
     min-width: 0;
-    padding: 24px;
+    padding: 20px;
     border-right: 1px solid var(--line);
 }
 
@@ -290,10 +290,10 @@ h2 {
 
 .metric strong {
     display: block;
-    margin: 18px 0 22px;
+    margin: 14px 0 18px;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2.8rem, 5vw, 5rem);
-    line-height: 0.8;
+    font-size: clamp(2.1rem, 3vw, 3rem);
+    line-height: 0.85;
     color: var(--green-dark);
 }
 
@@ -339,8 +339,8 @@ h2 {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    min-height: 88px;
-    padding: 18px 22px;
+    min-height: 76px;
+    padding: 15px 20px;
     border-bottom: 1px solid var(--line);
 }
 
@@ -419,7 +419,7 @@ tbody tr:hover td {
 .subscription-form {
     display: grid;
     gap: 10px;
-    padding: 28px;
+    padding: 24px;
     color: var(--surface);
     background: var(--green-dark);
     border: 3px solid var(--green-dark);
@@ -430,7 +430,7 @@ tbody tr:hover td {
 .subscription-form h3 {
     color: var(--surface);
     font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .create-panel > p:not(.panel-kicker),
@@ -450,7 +450,7 @@ input,
 select {
     width: 100%;
     min-width: 0;
-    min-height: 50px;
+    min-height: 46px;
     padding: 0 14px;
     color: var(--ink);
     background: var(--surface);
@@ -475,7 +475,7 @@ select:focus {
 
 .primary-button,
 .secondary-button {
-    min-height: 48px;
+    min-height: 44px;
     border-radius: 0;
     font-weight: 800;
     transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
@@ -544,9 +544,9 @@ select:focus {
     display: grid;
     grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.2fr) minmax(300px, 1.5fr);
     align-items: center;
-    gap: 28px;
-    min-height: 142px;
-    padding: 24px 0;
+    gap: 24px;
+    min-height: 120px;
+    padding: 20px 0;
     border-bottom: 1px solid #aabcae;
 }
 
@@ -565,7 +565,7 @@ select:focus {
 
 .plan h3 {
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(1.65rem, 3vw, 2.55rem);
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
     letter-spacing: -0.035em;
 }
 
@@ -584,7 +584,7 @@ select:focus {
 
 .price-option {
     min-width: 0;
-    padding: 15px;
+    padding: 13px;
     background: var(--surface);
     border-left: 5px solid var(--green);
 }
@@ -605,7 +605,7 @@ select:focus {
 
 .price-option strong {
     color: var(--green-dark);
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .status-badge {
@@ -764,7 +764,7 @@ select:focus-visible {
     }
 
     .section {
-        padding-block: 56px;
+        padding-block: 44px;
     }
 
     .section-heading {
@@ -799,7 +799,7 @@ select:focus-visible {
     }
 
     h1 {
-        font-size: 2.35rem;
+        font-size: 2.1rem;
     }
 
     .section-heading {
@@ -815,11 +815,11 @@ select:focus-visible {
     }
 
     .metric {
-        padding: 19px 16px;
+        padding: 17px 14px;
     }
 
     .metric strong {
-        font-size: 2.8rem;
+        font-size: 2.1rem;
     }
 
     .metric a {
@@ -828,7 +828,7 @@ select:focus-visible {
 
     .create-panel,
     .subscription-form {
-        padding: 22px;
+        padding: 20px;
     }
 
     .price-options {
