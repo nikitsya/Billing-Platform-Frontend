@@ -1,15 +1,13 @@
-const result = document.getElementById("result")
-
-export function showBackendStartingMessage() {
-    result.textContent = "Starting backend... this may take up to 60 seconds on the first request."
+export function setStatus(element, message, type = "") {
+    element.textContent = message
+    element.classList.toggle("is-error", type === "error")
+    element.classList.toggle("is-success", type === "success")
 }
 
-export function showResponse(response) {
-    const prefix = response.error ? "Request failed via" : "URL:"
-    result.textContent = `${prefix} ${response.url}\nStatus: ${response.status}`
-    result.textContent += response.body ? `\nBody: ${response.body}` : ``
-}
+export function getErrorMessage(error, fallbackMessage = "The request could not be completed.") {
+    if (error instanceof TypeError) {
+        return "The billing API is unavailable. Please try again shortly."
+    }
 
-export function showRequestError(error) {
-    result.textContent = `Request failed: ${error}`
+    return error?.message || fallbackMessage
 }

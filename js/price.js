@@ -1,23 +1,20 @@
-import {sendRequest} from "./api.js"
-import {
-    showBackendStartingMessage,
-    showRequestError,
-    showResponse
-} from "./result.js"
+import {getResponseError, sendRequest} from "./api.js"
 
-const allPricesButton = document.getElementById("allPricesButton")
+let prices = []
 
-export function initialisePrices() {
-    allPricesButton.addEventListener("click", getAllPrices)
+export async function loadPrices() {
+    const response = await sendRequest("/prices")
+    if (response.error) {
+        throw new Error(getResponseError(response, "Unable to load prices"))
+    }
+
+    prices = Array.isArray(response.data) ? response.data : []
+    document.dispatchEvent(new CustomEvent("billing:prices-updated", {
+        detail: prices
+    }))
+    return prices
 }
 
-async function getAllPrices() {
-    showBackendStartingMessage()
-
-    try {
-        const response = await sendRequest("/prices")
-        showResponse(response)
-    } catch (error) {
-        showRequestError(error)
-    }
+export function getPrices() {
+    return prices
 }
