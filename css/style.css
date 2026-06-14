@@ -175,8 +175,8 @@ main {
     align-items: end;
     justify-content: space-between;
     gap: 40px;
-    min-height: 145px;
-    padding: 36px clamp(28px, 5vw, 80px) 28px;
+    min-height: 82px;
+    padding: 14px clamp(28px, 5vw, 80px) 12px;
     color: var(--surface);
     background: var(--green);
     border-bottom: 6px solid var(--red);
@@ -194,8 +194,9 @@ main {
 }
 
 .eyebrow {
-    margin-bottom: 12px;
+    margin-bottom: 5px;
     color: var(--green-light);
+    font-size: 0.58rem;
 }
 
 h1,
@@ -208,17 +209,17 @@ p {
 h1 {
     margin: 0;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(2rem, 3vw, 2.8rem);
-    line-height: 0.95;
-    letter-spacing: -0.05em;
+    font-size: clamp(1.55rem, 2.2vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
 }
 
 .topbar-note {
     max-width: 310px;
-    margin: 0 0 4px;
+    margin: 0 0 2px;
     color: var(--green-light);
-    font-size: 0.82rem;
-    line-height: 1.6;
+    font-size: 0.72rem;
+    line-height: 1.4;
 }
 
 .section {
@@ -755,8 +756,8 @@ select:focus-visible {
     }
 
     .topbar {
-        min-height: 125px;
-        padding-top: 30px;
+        min-height: 76px;
+        padding-top: 12px;
     }
 
     .topbar-note {
@@ -799,7 +800,7 @@ select:focus-visible {
     }
 
     h1 {
-        font-size: 2.1rem;
+        font-size: 1.65rem;
     }
 
     .section-heading {
