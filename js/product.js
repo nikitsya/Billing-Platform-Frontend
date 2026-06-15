@@ -42,17 +42,13 @@ export async function loadCatalogue() {
     }
 }
 
-function renderCatalogue(loadedProducts, prices) {
-    const recurringProducts = loadedProducts.filter(product => {
-        return prices.some(price => price.product?.id === product.id && price.billingInterval !== "ONE_TIME")
-    })
-
-    if (!recurringProducts.length) {
+function renderCatalogue(products, prices) {
+    if (!products.length) {
         planList.innerHTML = '<p class="empty-state">No recurring plans are available.</p>'
         return
     }
 
-    planList.replaceChildren(...recurringProducts.map((product, index) => {
+    planList.replaceChildren(...products.map((product, index) => {
         const productPrices = prices.filter(price => price.product?.id === product.id)
         const article = document.createElement("article")
         article.className = "plan"
