@@ -11,8 +11,12 @@ const customerFormStatus = document.getElementById("customerFormStatus")
 let customers = []
 
 export function initialiseCustomers() {
-    customerForm.addEventListener("submit", handleCustomerFormSubmit)
-    allCustomersButton.addEventListener("click", loadCustomers)
+    if (!customerForm && !allCustomersButton && !customerRows && !customerCount) {
+        return null
+    }
+
+    customerForm?.addEventListener("submit", handleCustomerFormSubmit)
+    allCustomersButton?.addEventListener("click", loadCustomers)
     return loadCustomers()
 }
 
@@ -33,9 +37,15 @@ export async function loadCustomers() {
         renderCustomers()
         notifyCustomersUpdated()
     } catch (error) {
-        customerRows.innerHTML = emptyRow(getErrorMessage(error), 3)
-        customerSummary.textContent = "Customer records are unavailable."
-        customerCount.textContent = "—"
+        if (customerRows) {
+            customerRows.innerHTML = emptyRow(getErrorMessage(error), 3)
+        }
+        if (customerSummary) {
+            customerSummary.textContent = "Customer records are unavailable."
+        }
+        if (customerCount) {
+            customerCount.textContent = "—"
+        }
     } finally {
         setLoadingState(false)
     }
@@ -76,8 +86,16 @@ async function handleCustomerFormSubmit(event) {
 }
 
 function renderCustomers() {
-    customerCount.textContent = customers.length
-    customerSummary.textContent = `${customers.length} customer${customers.length === 1 ? "" : "s"} in the directory.`
+    if (customerCount) {
+        customerCount.textContent = customers.length
+    }
+    if (customerSummary) {
+        customerSummary.textContent = `${customers.length} customer${customers.length === 1 ? "" : "s"} in the directory.`
+    }
+
+    if (!customerRows) {
+        return
+    }
 
     if (!customers.length) {
         customerRows.innerHTML = emptyRow("No customers have been created yet.", 3)
@@ -113,6 +131,10 @@ function notifyCustomersUpdated() {
 }
 
 function setLoadingState(isLoading) {
+    if (!allCustomersButton) {
+        return
+    }
+
     allCustomersButton.disabled = isLoading
     allCustomersButton.textContent = isLoading ? "Loading..." : "Refresh customers"
 }

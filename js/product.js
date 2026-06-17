@@ -11,8 +11,12 @@ const priceCount = document.getElementById("priceCount")
 let products = []
 
 export function initialiseProducts() {
-    refreshButton.addEventListener("click", loadCatalogue)
-    hiddenPriceButton.addEventListener("click", loadCatalogue)
+    if (!refreshButton && !hiddenPriceButton && !planList && !productCount && !priceCount) {
+        return null
+    }
+
+    refreshButton?.addEventListener("click", loadCatalogue)
+    hiddenPriceButton?.addEventListener("click", loadCatalogue)
     return loadCatalogue()
 }
 
@@ -31,18 +35,32 @@ export async function loadCatalogue() {
 
         products = Array.isArray(productResponse.data) ? productResponse.data : []
         renderCatalogue(products, prices)
-        productCount.textContent = products.length
-        priceCount.textContent = prices.length
+        if (productCount) {
+            productCount.textContent = products.length
+        }
+        if (priceCount) {
+            priceCount.textContent = prices.length
+        }
     } catch (error) {
-        productCount.textContent = "—"
-        priceCount.textContent = "—"
-        planList.innerHTML = `<p class="empty-state">${getErrorMessage(error, "The plan catalogue is unavailable.")}</p>`
+        if (productCount) {
+            productCount.textContent = "—"
+        }
+        if (priceCount) {
+            priceCount.textContent = "—"
+        }
+        if (planList) {
+            planList.innerHTML = `<p class="empty-state">${getErrorMessage(error, "The plan catalogue is unavailable.")}</p>`
+        }
     } finally {
         setLoadingState(false)
     }
 }
 
 function renderCatalogue(products, prices) {
+    if (!planList) {
+        return
+    }
+
     if (!products.length) {
         planList.innerHTML = '<p class="empty-state">No recurring plans are available.</p>'
         return
@@ -97,6 +115,10 @@ function formatMoney(amountInCents, currency = "EUR") {
 }
 
 function setLoadingState(isLoading) {
+    if (!refreshButton) {
+        return
+    }
+
     refreshButton.disabled = isLoading
     refreshButton.textContent = isLoading ? "Loading..." : "Refresh catalogue"
 }

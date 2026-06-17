@@ -15,8 +15,12 @@ const subscriptionFormStatus = document.getElementById("subscriptionFormStatus")
 let subscriptions = []
 
 export function initialiseSubscriptions() {
-    subscriptionForm.addEventListener("submit", handleSubscriptionSubmit)
-    refreshButton.addEventListener("click", loadSubscriptions)
+    if (!subscriptionForm && !refreshButton && !subscriptionRows && !subscriptionCount) {
+        return null
+    }
+
+    subscriptionForm?.addEventListener("submit", handleSubscriptionSubmit)
+    refreshButton?.addEventListener("click", loadSubscriptions)
     document.addEventListener("billing:customers-updated", event => populateCustomerOptions(event.detail))
     document.addEventListener("billing:prices-updated", event => populatePriceOptions(event.detail))
 
@@ -37,9 +41,15 @@ async function loadSubscriptions() {
         subscriptions = Array.isArray(response.data) ? response.data : []
         renderSubscriptions()
     } catch (error) {
-        subscriptionCount.textContent = "—"
-        subscriptionSummary.textContent = "The subscriptions endpoint is not available yet."
-        subscriptionRows.innerHTML = emptyRow(getErrorMessage(error), 4)
+        if (subscriptionCount) {
+            subscriptionCount.textContent = "—"
+        }
+        if (subscriptionSummary) {
+            subscriptionSummary.textContent = "The subscriptions endpoint is not available yet."
+        }
+        if (subscriptionRows) {
+            subscriptionRows.innerHTML = emptyRow(getErrorMessage(error), 4)
+        }
     } finally {
         setLoadingState(false)
     }
@@ -80,6 +90,10 @@ async function handleSubscriptionSubmit(event) {
 }
 
 function populateCustomerOptions(customers) {
+    if (!customerSelect) {
+        return
+    }
+
     const currentValue = customerSelect.value
     customerSelect.replaceChildren(createOption("", "Select customer"))
 
@@ -91,6 +105,10 @@ function populateCustomerOptions(customers) {
 }
 
 function populatePriceOptions(prices) {
+    if (!priceSelect) {
+        return
+    }
+
     const currentValue = priceSelect.value
     priceSelect.replaceChildren(createOption("", "Select plan"))
 
@@ -108,8 +126,16 @@ function populatePriceOptions(prices) {
 }
 
 function renderSubscriptions() {
-    subscriptionCount.textContent = subscriptions.length
-    subscriptionSummary.textContent = `${subscriptions.length} subscription${subscriptions.length === 1 ? "" : "s"} recorded.`
+    if (subscriptionCount) {
+        subscriptionCount.textContent = subscriptions.length
+    }
+    if (subscriptionSummary) {
+        subscriptionSummary.textContent = `${subscriptions.length} subscription${subscriptions.length === 1 ? "" : "s"} recorded.`
+    }
+
+    if (!subscriptionRows) {
+        return
+    }
 
     if (!subscriptions.length) {
         subscriptionRows.innerHTML = emptyRow("No subscriptions have been created yet.", 4)
@@ -182,6 +208,10 @@ function emptyRow(message, colspan) {
 }
 
 function setLoadingState(isLoading) {
+    if (!refreshButton) {
+        return
+    }
+
     refreshButton.disabled = isLoading
     refreshButton.textContent = isLoading ? "Loading..." : "Refresh subscriptions"
 }
