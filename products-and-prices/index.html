@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="#0b6b3a" name="theme-color"/>
+    <meta content="../icons/icon-192.png" name="msapplication-TileImage"/>
+    <link href="../icons/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+    <link href="../icon.png" rel="icon" sizes="512x512" type="image/png"/>
+    <link href="../icons/icon-32.png" rel="shortcut icon" type="image/png"/>
+    <link href="../icons/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="../manifest.webmanifest" rel="manifest"/>
+    <title>Products and Prices | Billing Platform</title>
+    <link href="../css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<aside class="sidebar">
+    <a aria-label="Billing Platform dashboard" class="brand" href="../overview/">
+        <span class="brand-mark">BP</span>
+        <span>Billing<br/>Platform</span>
+    </a>
+
+    <nav aria-label="Dashboard pages">
+        <a class="nav-link" href="../overview/">
+            <span aria-hidden="true">01</span>
+            Overview
+        </a>
+        <a class="nav-link" href="../customers/">
+            <span aria-hidden="true">02</span>
+            Customers
+        </a>
+        <a class="nav-link is-active" href="./">
+            <span aria-hidden="true">03</span>
+            Products & Prices
+        </a>
+        <a class="nav-link" href="../subscriptions/">
+            <span aria-hidden="true">04</span>
+            Subscriptions
+        </a>
+    </nav>
+
+    <button class="health-check" id="pingButton" type="button">
+        <span aria-hidden="true" class="health-dot"></span>
+        <span>
+            <strong>API status</strong>
+            <small id="apiStatus">Check connection</small>
+        </span>
+    </button>
+</aside>
+
+<main>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Operations workspace</p>
+            <h1>Products and prices</h1>
+        </div>
+        <p class="topbar-note">Recurring plans and billing intervals in the catalogue.</p>
+    </header>
+
+    <section aria-labelledby="catalogueTitle" class="section catalogue-section" id="catalogue">
+        <div class="section-heading">
+            <div>
+                <p class="section-number">03 / Products & Prices</p>
+                <h2 id="catalogueTitle">Plan catalogue</h2>
+            </div>
+            <button class="secondary-button" id="allProductsButton" type="button">Refresh catalogue</button>
+        </div>
+
+        <button hidden id="allPricesButton" type="button">Refresh prices</button>
+
+        <div aria-live="polite" class="plan-list" id="planList">
+            <p class="empty-state">Loading products and prices...</p>
+        </div>
+    </section>
+</main>
+
+<script src="../index.js" type="module"></script>
+</body>
+</html>

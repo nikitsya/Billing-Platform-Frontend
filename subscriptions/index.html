@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="#0b6b3a" name="theme-color"/>
+    <meta content="../icons/icon-192.png" name="msapplication-TileImage"/>
+    <link href="../icons/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+    <link href="../icon.png" rel="icon" sizes="512x512" type="image/png"/>
+    <link href="../icons/icon-32.png" rel="shortcut icon" type="image/png"/>
+    <link href="../icons/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="../manifest.webmanifest" rel="manifest"/>
+    <title>Subscriptions | Billing Platform</title>
+    <link href="../css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<aside class="sidebar">
+    <a aria-label="Billing Platform dashboard" class="brand" href="../overview/">
+        <span class="brand-mark">BP</span>
+        <span>Billing<br/>Platform</span>
+    </a>
+
+    <nav aria-label="Dashboard pages">
+        <a class="nav-link" href="../overview/">
+            <span aria-hidden="true">01</span>
+            Overview
+        </a>
+        <a class="nav-link" href="../customers/">
+            <span aria-hidden="true">02</span>
+            Customers
+        </a>
+        <a class="nav-link" href="../products-and-prices/">
+            <span aria-hidden="true">03</span>
+            Products & Prices
+        </a>
+        <a class="nav-link is-active" href="./">
+            <span aria-hidden="true">04</span>
+            Subscriptions
+        </a>
+    </nav>
+
+    <button class="health-check" id="pingButton" type="button">
+        <span aria-hidden="true" class="health-dot"></span>
+        <span>
+            <strong>API status</strong>
+            <small id="apiStatus">Check connection</small>
+        </span>
+    </button>
+</aside>
+
+<main>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Operations workspace</p>
+            <h1>Subscriptions</h1>
+        </div>
+        <p class="topbar-note">Recurring billing assignments by customer and plan.</p>
+    </header>
+
+    <section aria-labelledby="subscriptionsTitle" class="section" id="subscriptions">
+        <div class="section-heading">
+            <div>
+                <p class="section-number">04 / Subscriptions</p>
+                <h2 id="subscriptionsTitle">Recurring billing</h2>
+            </div>
+            <button class="secondary-button" id="allSubscriptionsButton" type="button">Refresh subscriptions</button>
+        </div>
+
+        <div class="subscription-layout">
+            <form class="subscription-form" id="subscriptionForm">
+                <div>
+                    <p class="panel-kicker">New subscription</p>
+                    <h3>Assign a plan</h3>
+                </div>
+
+                <label for="subscriptionCustomer">Customer</label>
+                <select id="subscriptionCustomer" name="customerId" required>
+                    <option value="">Select customer</option>
+                </select>
+
+                <label for="subscriptionPrice">Plan and price</label>
+                <select id="subscriptionPrice" name="priceId" required>
+                    <option value="">Select plan</option>
+                </select>
+
+                <button class="primary-button" type="submit">Create subscription</button>
+                <p aria-live="polite" class="form-status" id="subscriptionFormStatus"></p>
+            </form>
+
+            <div class="data-panel subscription-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>All subscriptions</h3>
+                        <p id="subscriptionSummary">Loading subscription records...</p>
+                    </div>
+                </div>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Plan</th>
+                            <th scope="col">Interval</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="subscriptionRows">
+                        <tr>
+                            <td class="empty-state" colspan="4">Loading subscriptions...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="../index.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="#0b6b3a" name="theme-color"/>
+    <meta content="../icons/icon-192.png" name="msapplication-TileImage"/>
+    <link href="../icons/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+    <link href="../icon.png" rel="icon" sizes="512x512" type="image/png"/>
+    <link href="../icons/icon-32.png" rel="shortcut icon" type="image/png"/>
+    <link href="../icons/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="../manifest.webmanifest" rel="manifest"/>
+    <title>Customers | Billing Platform</title>
+    <link href="../css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<aside class="sidebar">
+    <a aria-label="Billing Platform dashboard" class="brand" href="../overview/">
+        <span class="brand-mark">BP</span>
+        <span>Billing<br/>Platform</span>
+    </a>
+
+    <nav aria-label="Dashboard pages">
+        <a class="nav-link" href="../overview/">
+            <span aria-hidden="true">01</span>
+            Overview
+        </a>
+        <a class="nav-link is-active" href="./">
+            <span aria-hidden="true">02</span>
+            Customers
+        </a>
+        <a class="nav-link" href="../products-and-prices/">
+            <span aria-hidden="true">03</span>
+            Products & Prices
+        </a>
+        <a class="nav-link" href="../subscriptions/">
+            <span aria-hidden="true">04</span>
+            Subscriptions
+        </a>
+    </nav>
+
+    <button class="health-check" id="pingButton" type="button">
+        <span aria-hidden="true" class="health-dot"></span>
+        <span>
+            <strong>API status</strong>
+            <small id="apiStatus">Check connection</small>
+        </span>
+    </button>
+</aside>
+
+<main>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Operations workspace</p>
+            <h1>Customers</h1>
+        </div>
+        <p class="topbar-note">Customer records ready for billing and subscriptions.</p>
+    </header>
+
+    <section aria-labelledby="customersTitle" class="section" id="customers">
+        <div class="section-heading">
+            <div>
+                <p class="section-number">02 / Customers</p>
+                <h2 id="customersTitle">Customer directory</h2>
+            </div>
+            <button class="secondary-button" id="allCustomersButton" type="button">Refresh customers</button>
+        </div>
+
+        <div class="customer-layout">
+            <div class="data-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>All customers</h3>
+                        <p id="customerSummary">Loading customer records...</p>
+                    </div>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                        </thead>
+                        <tbody id="customerRows">
+                        <tr>
+                            <td class="empty-state" colspan="3">Loading customers...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <form class="create-panel" id="customerForm">
+                <p class="panel-kicker">New record</p>
+                <h3>Create customer</h3>
+                <p>Add a customer before assigning a subscription.</p>
+
+                <label for="name">Full name</label>
+                <input autocomplete="name" id="name" name="name" placeholder="e.g. Alex Morgan" required/>
+
+                <label for="email">Email address</label>
+                <input autocomplete="email" id="email" name="email" placeholder="alex@example.com" required type="email"/>
+
+                <button class="primary-button" type="submit">Create customer</button>
+                <p aria-live="polite" class="form-status" id="customerFormStatus"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script src="../index.js" type="module"></script>
+</body>
+</html>
