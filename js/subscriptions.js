@@ -1,6 +1,6 @@
 import {getResponseError, sendRequest} from "./api.js"
-import {getCustomers} from "./customers.js"
-import {getPrices} from "./price.js"
+import {getCustomers, loadCustomers} from "./customers.js"
+import {getPrices, loadPrices} from "./price.js"
 import {getErrorMessage, setStatus} from "./result.js"
 
 const subscriptionForm = document.getElementById("subscriptionForm")
@@ -26,7 +26,26 @@ export function initialiseSubscriptions() {
 
     populateCustomerOptions(getCustomers())
     populatePriceOptions(getPrices())
+    loadSubscriptionFormOptions()
     return loadSubscriptions()
+}
+
+async function loadSubscriptionFormOptions() {
+    const requests = []
+
+    if (customerSelect && !getCustomers().length) {
+        requests.push(loadCustomers())
+    }
+
+    if (priceSelect && !getPrices().length) {
+        requests.push(loadPrices())
+    }
+
+    try {
+        await Promise.all(requests)
+    } catch (error) {
+        setStatus(subscriptionFormStatus, getErrorMessage(error), "error")
+    }
 }
 
 async function loadSubscriptions() {
