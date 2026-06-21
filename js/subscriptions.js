@@ -132,13 +132,13 @@ function populatePriceOptions(prices) {
     priceSelect.replaceChildren(createOption("", "Select plan"))
 
     prices
+        .filter(price => price.billingInterval !== "ONE_TIME")
         .sort(comparePrices)
         .forEach(price => {
             const productName = price.product?.name || "Plan"
             const billingInterval = price.billingInterval?.toLowerCase() || "billing period"
-            const interval = billingInterval === "one_time" ? "" : `/ ${billingInterval}`
             const amount = formatMoney(price.unitAmountCents, price.currency)
-            priceSelect.append(createOption(price.id, `${productName} · ${amount} ${interval}`))
+            priceSelect.append(createOption(price.id, `${productName} · ${amount} / ${billingInterval}`))
         })
 
     priceSelect.value = currentValue
