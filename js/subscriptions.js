@@ -132,7 +132,7 @@ function populatePriceOptions(prices) {
     priceSelect.replaceChildren(createOption("", "Select plan"))
 
     prices
-        .filter(price => price.billingInterval !== "ONE_TIME")
+        .filter(price => price.billingInterval.toLowerCase() !== "one_time")
         .sort(comparePrices)
         .forEach(price => {
             const productName = price.product?.name || "Plan"
