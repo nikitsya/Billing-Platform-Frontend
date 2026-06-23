@@ -410,6 +410,51 @@ tbody tr:hover td {
     color: var(--muted);
 }
 
+.action-cell {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.delete-customer-button {
+    position: relative;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: transparent;
+    background: var(--red);
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    font-size: 0;
+}
+
+.delete-customer-button::before,
+.delete-customer-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 2px;
+    background: var(--surface);
+    border-radius: 999px;
+    transform-origin: center;
+}
+
+.delete-customer-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.delete-customer-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.delete-customer-button:hover {
+    background: var(--red-dark);
+    border-color: var(--red-dark);
+}
+
 .empty-state {
     padding: 34px 18px;
     color: var(--muted);

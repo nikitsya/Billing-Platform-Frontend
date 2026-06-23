@@ -38,7 +38,7 @@ export async function loadCustomers() {
         notifyCustomersUpdated()
     } catch (error) {
         if (customerRows) {
-            customerRows.innerHTML = emptyRow(getErrorMessage(error), 3)
+            customerRows.innerHTML = emptyRow(getErrorMessage(error), 4)
         }
         if (customerSummary) {
             customerSummary.textContent = "Customer records are unavailable."
@@ -98,7 +98,7 @@ function renderCustomers() {
     }
 
     if (!customers.length) {
-        customerRows.innerHTML = emptyRow("No customers have been created yet.", 3)
+        customerRows.innerHTML = emptyRow("No customers have been created yet.", 4)
         return
     }
 
@@ -107,7 +107,8 @@ function renderCustomers() {
         row.append(
             createCell(`#${customer.id}`, "muted-cell"),
             createCell(customer.name, "customer-name"),
-            createCell(customer.email, "muted-cell")
+            createCell(customer.email, "muted-cell"),
+            createDeleteCell(customer)
         )
         return row
     }))
@@ -118,6 +119,24 @@ function createCell(value, className) {
     cell.textContent = value ?? "—"
     cell.className = className
     return cell
+}
+
+function createDeleteCell(customer) {
+    const cell = document.createElement("td")
+    cell.className = "action-cell"
+
+    const button = document.createElement("button")
+    button.className = "delete-customer-button"
+    button.type = "button"
+    button.textContent = "×"
+    button.ariaLabel = `Delete ${customer.name || "customer"}`
+    button.addEventListener("click", () => handleCustomerDelete(customer))
+
+    cell.append(button)
+    return cell
+}
+
+function handleCustomerDelete(customer) {
 }
 
 function emptyRow(message, colspan) {
