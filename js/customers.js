@@ -9,6 +9,7 @@ const customerCount = document.getElementById("customerCount")
 const customerFormStatus = document.getElementById("customerFormStatus")
 
 let customers = []
+let deletingCustomerId = null
 
 export function initialiseCustomers() {
     if (!customerForm && !allCustomersButton && !customerRows && !customerCount) {
@@ -136,7 +137,38 @@ function createDeleteCell(customer) {
     return cell
 }
 
-function handleCustomerDelete(customer) {
+async function handleCustomerDelete(customer) {
+    if (!customer?.id || deletingCustomerId) {
+        return
+    }
+
+    const customerLabel = customer.name || customer.email || `customer #${customer.id}`
+    if (!window.confirm(`Delete ${customerLabel}?`)) return
+
+    deletingCustomerId = customer.id
+    renderCustomers()
+    setStatus(customerFormStatus, `Deleting ${customerLabel}...`)
+
+    try {
+        const response = await sendRequest(`/customers/${customer.id}`, {
+            method: "DELETE"
+        })
+
+        if (response.error) {
+            throw new Error(getResponseError(response, "Unable to delete customer"))
+        }
+
+        setStatus(customerFormStatus, "Customer deleted successfully.", "success")
+        deletingCustomerId = null
+        await loadCustomers()
+    } catch (error) {
+        setStatus(customerFormStatus, getErrorMessage(error), "error")
+    } finally {
+        if (deletingCustomerId !== null) {
+            deletingCustomerId = null
+            renderCustomers()
+        }
+    }
 }
 
 function emptyRow(message, colspan) {

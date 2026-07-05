@@ -455,6 +455,11 @@ tbody tr:hover td {
     border-color: var(--red-dark);
 }
 
+.delete-customer-button:disabled {
+    cursor: wait;
+    opacity: 0.58;
+}
+
 .empty-state {
     padding: 34px 18px;
     color: var(--muted);
