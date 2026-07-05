@@ -103,11 +103,12 @@
                             <th scope="col">Plan</th>
                             <th scope="col">Interval</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
                         </thead>
                         <tbody id="subscriptionRows">
                         <tr>
-                            <td class="empty-state" colspan="4">Loading subscriptions...</td>
+                            <td class="empty-state" colspan="5">Loading subscriptions...</td>
                         </tr>
                         </tbody>
                     </table>
@@ -116,6 +117,20 @@
         </div>
     </section>
 </main>
+
+<div aria-describedby="deleteSubscriptionDescription" aria-labelledby="deleteSubscriptionTitle" aria-modal="true" class="modal-backdrop" hidden id="deleteSubscriptionDialog" role="dialog">
+    <div class="modal-panel">
+        <p class="panel-kicker">Confirm deletion</p>
+        <h2 id="deleteSubscriptionTitle">Delete subscription?</h2>
+        <p id="deleteSubscriptionDescription">
+            This will remove <strong id="deleteSubscriptionName">this subscription</strong> from recurring billing.
+        </p>
+        <div class="modal-actions">
+            <button class="secondary-button" id="cancelDeleteSubscriptionButton" type="button">Cancel</button>
+            <button class="primary-button danger-button" id="confirmDeleteSubscriptionButton" type="button">Delete subscription</button>
+        </div>
+    </div>
+</div>
 
 <script src="../index.js" type="module"></script>
 </body>

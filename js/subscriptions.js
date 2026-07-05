@@ -11,8 +11,15 @@ const subscriptionRows = document.getElementById("subscriptionRows")
 const subscriptionSummary = document.getElementById("subscriptionSummary")
 const subscriptionCount = document.getElementById("subscriptionCount")
 const subscriptionFormStatus = document.getElementById("subscriptionFormStatus")
+const deleteSubscriptionDialog = document.getElementById("deleteSubscriptionDialog")
+const deleteSubscriptionName = document.getElementById("deleteSubscriptionName")
+const cancelDeleteSubscriptionButton = document.getElementById("cancelDeleteSubscriptionButton")
+const confirmDeleteSubscriptionButton = document.getElementById("confirmDeleteSubscriptionButton")
 
 let subscriptions = []
+let deletingSubscriptionId = null
+let subscriptionPendingDeletion = null
+let previouslyFocusedElement = null
 
 export function initialiseSubscriptions() {
     if (!subscriptionForm && !refreshButton && !subscriptionRows && !subscriptionCount) {
@@ -23,6 +30,10 @@ export function initialiseSubscriptions() {
     refreshButton?.addEventListener("click", loadSubscriptions)
     document.addEventListener("billing:customers-updated", event => populateCustomerOptions(event.detail))
     document.addEventListener("billing:prices-updated", event => populatePriceOptions(event.detail))
+    cancelDeleteSubscriptionButton?.addEventListener("click", closeSubscriptionDeleteDialog)
+    confirmDeleteSubscriptionButton?.addEventListener("click", confirmSubscriptionDelete)
+    deleteSubscriptionDialog?.addEventListener("click", handleDeleteDialogBackdropClick)
+    document.addEventListener("keydown", handleDeleteDialogKeydown)
 
     populateCustomerOptions(getCustomers())
     populatePriceOptions(getPrices())
@@ -68,7 +79,7 @@ async function loadSubscriptions() {
             subscriptionSummary.textContent = "The subscriptions endpoint is not available yet."
         }
         if (subscriptionRows) {
-            subscriptionRows.innerHTML = emptyRow(getErrorMessage(error), 4)
+            subscriptionRows.innerHTML = emptyRow(getErrorMessage(error), 5)
         }
     } finally {
         setLoadingState(false)
@@ -162,7 +173,7 @@ function renderSubscriptions() {
     }
 
     if (!subscriptions.length) {
-        subscriptionRows.innerHTML = emptyRow("No subscriptions have been created yet.", 4)
+        subscriptionRows.innerHTML = emptyRow("No subscriptions have been created yet.", 5)
         return
     }
 
@@ -175,7 +186,8 @@ function renderSubscriptions() {
             createCell(customer?.name || customer?.email || `Customer #${subscription.customerId ?? "—"}`, "customer-name"),
             createCell(price?.product?.name || subscription.product?.name || "—"),
             createCell(price?.billingInterval || subscription.billingInterval || "—", "muted-cell"),
-            createStatusCell(subscription.status)
+            createStatusCell(subscription.status),
+            createDeleteCell(subscription)
         )
 
         return row
@@ -184,6 +196,125 @@ function renderSubscriptions() {
 
 function findCustomer(customerId) {
     return getCustomers().find(customer => customer.id === customerId)
+}
+
+function createDeleteCell(subscription) {
+    const cell = document.createElement("td")
+    cell.className = "action-cell"
+
+    const button = document.createElement("button")
+    button.className = "delete-customer-button"
+    button.type = "button"
+    button.textContent = "×"
+    button.ariaLabel = `Delete ${getSubscriptionLabel(subscription)}`
+    button.disabled = deletingSubscriptionId === subscription.id
+    button.addEventListener("click", () => openSubscriptionDeleteDialog(subscription))
+
+    cell.append(button)
+    return cell
+}
+
+function openSubscriptionDeleteDialog(subscription) {
+    if (!deleteSubscriptionDialog || !subscription?.id || deletingSubscriptionId) {
+        return
+    }
+
+    subscriptionPendingDeletion = subscription
+    previouslyFocusedElement = document.activeElement
+
+    if (deleteSubscriptionName) {
+        deleteSubscriptionName.textContent = getSubscriptionLabel(subscription)
+    }
+
+    deleteSubscriptionDialog.hidden = false
+    document.body.classList.add("modal-open")
+    confirmDeleteSubscriptionButton?.focus()
+}
+
+function closeSubscriptionDeleteDialog() {
+    if (!deleteSubscriptionDialog || deletingSubscriptionId) {
+        return
+    }
+
+    deleteSubscriptionDialog.hidden = true
+    document.body.classList.remove("modal-open")
+    subscriptionPendingDeletion = null
+
+    if (previouslyFocusedElement instanceof HTMLElement) {
+        previouslyFocusedElement.focus()
+    }
+
+    previouslyFocusedElement = null
+}
+
+function handleDeleteDialogBackdropClick(event) {
+    if (event.target === deleteSubscriptionDialog) {
+        closeSubscriptionDeleteDialog()
+    }
+}
+
+function handleDeleteDialogKeydown(event) {
+    if (event.key === "Escape" && !deleteSubscriptionDialog?.hidden) {
+        closeSubscriptionDeleteDialog()
+    }
+}
+
+function confirmSubscriptionDelete() {
+    return handleSubscriptionDelete(subscriptionPendingDeletion)
+}
+
+async function handleSubscriptionDelete(subscription) {
+    if (!subscription?.id || deletingSubscriptionId) {
+        return
+    }
+
+    const subscriptionLabel = getSubscriptionLabel(subscription)
+    deletingSubscriptionId = subscription.id
+    renderSubscriptions()
+    setDeleteDialogLoading(true)
+    setStatus(subscriptionFormStatus, `Deleting ${subscriptionLabel}...`)
+
+    try {
+        const response = await sendRequest(`/subscriptions/${subscription.id}`, {
+            method: "DELETE"
+        })
+
+        if (response.error) {
+            throw new Error(getResponseError(response, "Unable to delete subscription"))
+        }
+
+        setStatus(subscriptionFormStatus, "Subscription deleted successfully.", "success")
+        deletingSubscriptionId = null
+        closeSubscriptionDeleteDialog()
+        await loadSubscriptions()
+    } catch (error) {
+        setStatus(subscriptionFormStatus, getErrorMessage(error), "error")
+    } finally {
+        if (deletingSubscriptionId !== null) {
+            deletingSubscriptionId = null
+            renderSubscriptions()
+        }
+        setDeleteDialogLoading(false)
+    }
+}
+
+function getSubscriptionLabel(subscription) {
+    const customer = subscription.customer || findCustomer(subscription.customerId)
+    const price = subscription.price || findPrice(subscription.priceId)
+    const customerLabel = customer?.name || customer?.email || `subscription #${subscription.id}`
+    const planLabel = price?.product?.name || subscription.product?.name
+    return planLabel ? `${customerLabel} · ${planLabel}` : customerLabel
+}
+
+function setDeleteDialogLoading(isLoading) {
+    if (confirmDeleteSubscriptionButton) {
+        confirmDeleteSubscriptionButton.disabled = isLoading
+        confirmDeleteSubscriptionButton.textContent = isLoading ? "Deleting..." : "Delete subscription"
+    }
+
+    if (cancelDeleteSubscriptionButton) {
+        cancelDeleteSubscriptionButton.disabled = isLoading
+    }
 }
 
 function hasSubscription(customer) {
