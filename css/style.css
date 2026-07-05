@@ -632,6 +632,22 @@ select:focus {
     margin-top: 0;
 }
 
+.modal-status {
+    min-height: 18px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+.modal-status.is-error {
+    color: var(--red-dark);
+}
+
+.modal-status.is-success {
+    color: var(--green);
+}
+
 .danger-button:hover {
     color: var(--surface);
     background: var(--red-dark);

@@ -15,6 +15,7 @@ const deleteSubscriptionDialog = document.getElementById("deleteSubscriptionDial
 const deleteSubscriptionName = document.getElementById("deleteSubscriptionName")
 const cancelDeleteSubscriptionButton = document.getElementById("cancelDeleteSubscriptionButton")
 const confirmDeleteSubscriptionButton = document.getElementById("confirmDeleteSubscriptionButton")
+const deleteSubscriptionStatus = document.getElementById("deleteSubscriptionStatus")
 
 let subscriptions = []
 let deletingSubscriptionId = null
@@ -226,6 +227,7 @@ function openSubscriptionDeleteDialog(subscription) {
         deleteSubscriptionName.textContent = getSubscriptionLabel(subscription)
     }
 
+    setStatus(deleteSubscriptionStatus, "")
     deleteSubscriptionDialog.hidden = false
     document.body.classList.add("modal-open")
     confirmDeleteSubscriptionButton?.focus()
@@ -239,6 +241,7 @@ function closeSubscriptionDeleteDialog() {
     deleteSubscriptionDialog.hidden = true
     document.body.classList.remove("modal-open")
     subscriptionPendingDeletion = null
+    setStatus(deleteSubscriptionStatus, "")
 
     if (previouslyFocusedElement instanceof HTMLElement) {
         previouslyFocusedElement.focus()
@@ -272,7 +275,7 @@ async function handleSubscriptionDelete(subscription) {
     deletingSubscriptionId = subscription.id
     renderSubscriptions()
     setDeleteDialogLoading(true)
-    setStatus(subscriptionFormStatus, `Deleting ${subscriptionLabel}...`)
+    setStatus(deleteSubscriptionStatus, `Deleting ${subscriptionLabel}...`)
 
     try {
         const response = await sendRequest(`/subscriptions/${subscription.id}`, {
@@ -283,12 +286,12 @@ async function handleSubscriptionDelete(subscription) {
             throw new Error(getResponseError(response, "Unable to delete subscription"))
         }
 
-        setStatus(subscriptionFormStatus, "Subscription deleted successfully.", "success")
+        setStatus(deleteSubscriptionStatus, "Subscription deleted successfully.", "success")
         deletingSubscriptionId = null
         closeSubscriptionDeleteDialog()
         await loadSubscriptions()
     } catch (error) {
-        setStatus(subscriptionFormStatus, getErrorMessage(error), "error")
+        setStatus(deleteSubscriptionStatus, getErrorMessage(error), "error")
     } finally {
         if (deletingSubscriptionId !== null) {
             deletingSubscriptionId = null
