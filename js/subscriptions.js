@@ -59,6 +59,7 @@ async function loadSubscriptions() {
 
         subscriptions = Array.isArray(response.data) ? response.data : []
         renderSubscriptions()
+        populateCustomerOptions(getCustomers())
     } catch (error) {
         if (subscriptionCount) {
             subscriptionCount.textContent = "—"
@@ -116,11 +117,15 @@ function populateCustomerOptions(customers) {
     const currentValue = customerSelect.value
     customerSelect.replaceChildren(createOption("", "Select customer"))
 
-    customers.forEach(customer => {
+    const availableCustomers = customers.filter(customer => !hasSubscription(customer))
+
+    availableCustomers.forEach(customer => {
         customerSelect.append(createOption(customer.id, `${customer.name} · ${customer.email}`))
     })
 
-    customerSelect.value = currentValue
+    if (availableCustomers.some(customer => String(customer.id) === currentValue)) {
+        customerSelect.value = currentValue
+    }
 }
 
 function populatePriceOptions(prices) {
@@ -179,6 +184,14 @@ function renderSubscriptions() {
 
 function findCustomer(customerId) {
     return getCustomers().find(customer => customer.id === customerId)
+}
+
+function hasSubscription(customer) {
+    return subscriptions.some(subscription => getSubscriptionCustomerId(subscription) === Number(customer.id))
+}
+
+function getSubscriptionCustomerId(subscription) {
+    return Number(subscription.customer?.id ?? subscription.customerId)
 }
 
 function findPrice(priceId) {
