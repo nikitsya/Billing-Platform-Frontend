@@ -7,9 +7,15 @@ const customerRows = document.getElementById("customerRows")
 const customerSummary = document.getElementById("customerSummary")
 const customerCount = document.getElementById("customerCount")
 const customerFormStatus = document.getElementById("customerFormStatus")
+const deleteCustomerDialog = document.getElementById("deleteCustomerDialog")
+const deleteCustomerName = document.getElementById("deleteCustomerName")
+const cancelDeleteCustomerButton = document.getElementById("cancelDeleteCustomerButton")
+const confirmDeleteCustomerButton = document.getElementById("confirmDeleteCustomerButton")
 
 let customers = []
 let deletingCustomerId = null
+let customerPendingDeletion = null
+let previouslyFocusedElement = null
 
 export function initialiseCustomers() {
     if (!customerForm && !allCustomersButton && !customerRows && !customerCount) {
@@ -18,6 +24,10 @@ export function initialiseCustomers() {
 
     customerForm?.addEventListener("submit", handleCustomerFormSubmit)
     allCustomersButton?.addEventListener("click", loadCustomers)
+    cancelDeleteCustomerButton?.addEventListener("click", closeCustomerDeleteDialog)
+    confirmDeleteCustomerButton?.addEventListener("click", confirmCustomerDelete)
+    deleteCustomerDialog?.addEventListener("click", handleDeleteDialogBackdropClick)
+    document.addEventListener("keydown", handleDeleteDialogKeydown)
     return loadCustomers()
 }
 
@@ -131,10 +141,60 @@ function createDeleteCell(customer) {
     button.type = "button"
     button.textContent = "×"
     button.ariaLabel = `Delete ${customer.name || "customer"}`
-    button.addEventListener("click", () => handleCustomerDelete(customer))
+    button.disabled = deletingCustomerId === customer.id
+    button.addEventListener("click", () => openCustomerDeleteDialog(customer))
 
     cell.append(button)
     return cell
+}
+
+function openCustomerDeleteDialog(customer) {
+    if (!deleteCustomerDialog || !customer?.id || deletingCustomerId) {
+        return
+    }
+
+    customerPendingDeletion = customer
+    previouslyFocusedElement = document.activeElement
+
+    if (deleteCustomerName) {
+        deleteCustomerName.textContent = getCustomerLabel(customer)
+    }
+
+    deleteCustomerDialog.hidden = false
+    document.body.classList.add("modal-open")
+    confirmDeleteCustomerButton?.focus()
+}
+
+function closeCustomerDeleteDialog() {
+    if (!deleteCustomerDialog || deletingCustomerId) {
+        return
+    }
+
+    deleteCustomerDialog.hidden = true
+    document.body.classList.remove("modal-open")
+    customerPendingDeletion = null
+
+    if (previouslyFocusedElement instanceof HTMLElement) {
+        previouslyFocusedElement.focus()
+    }
+
+    previouslyFocusedElement = null
+}
+
+function handleDeleteDialogBackdropClick(event) {
+    if (event.target === deleteCustomerDialog) {
+        closeCustomerDeleteDialog()
+    }
+}
+
+function handleDeleteDialogKeydown(event) {
+    if (event.key === "Escape" && !deleteCustomerDialog?.hidden) {
+        closeCustomerDeleteDialog()
+    }
+}
+
+function confirmCustomerDelete() {
+    return handleCustomerDelete(customerPendingDeletion)
 }
 
 async function handleCustomerDelete(customer) {
@@ -142,11 +202,10 @@ async function handleCustomerDelete(customer) {
         return
     }
 
-    const customerLabel = customer.name || customer.email || `customer #${customer.id}`
-    if (!window.confirm(`Delete ${customerLabel}?`)) return
-
+    const customerLabel = getCustomerLabel(customer)
     deletingCustomerId = customer.id
     renderCustomers()
+    setDeleteDialogLoading(true)
     setStatus(customerFormStatus, `Deleting ${customerLabel}...`)
 
     try {
@@ -160,6 +219,7 @@ async function handleCustomerDelete(customer) {
 
         setStatus(customerFormStatus, "Customer deleted successfully.", "success")
         deletingCustomerId = null
+        closeCustomerDeleteDialog()
         await loadCustomers()
     } catch (error) {
         setStatus(customerFormStatus, getErrorMessage(error), "error")
@@ -168,6 +228,22 @@ async function handleCustomerDelete(customer) {
             deletingCustomerId = null
             renderCustomers()
         }
+        setDeleteDialogLoading(false)
+    }
+}
+
+function getCustomerLabel(customer) {
+    return customer.name || customer.email || `customer #${customer.id}`
+}
+
+function setDeleteDialogLoading(isLoading) {
+    if (confirmDeleteCustomerButton) {
+        confirmDeleteCustomerButton.disabled = isLoading
+        confirmDeleteCustomerButton.textContent = isLoading ? "Deleting..." : "Delete customer"
+    }
+
+    if (cancelDeleteCustomerButton) {
+        cancelDeleteCustomerButton.disabled = isLoading
     }
 }
 

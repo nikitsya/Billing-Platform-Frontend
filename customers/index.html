@@ -111,6 +111,20 @@
     </section>
 </main>
 
+<div aria-describedby="deleteCustomerDescription" aria-labelledby="deleteCustomerTitle" aria-modal="true" class="modal-backdrop" hidden id="deleteCustomerDialog" role="dialog">
+    <div class="modal-panel">
+        <p class="panel-kicker">Confirm deletion</p>
+        <h2 id="deleteCustomerTitle">Delete customer?</h2>
+        <p id="deleteCustomerDescription">
+            This will remove <strong id="deleteCustomerName">this customer</strong> from the directory.
+        </p>
+        <div class="modal-actions">
+            <button class="secondary-button" id="cancelDeleteCustomerButton" type="button">Cancel</button>
+            <button class="primary-button danger-button" id="confirmDeleteCustomerButton" type="button">Delete customer</button>
+        </div>
+    </div>
+</div>
+
 <script src="../index.js" type="module"></script>
 </body>
 </html>
