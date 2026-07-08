@@ -102,7 +102,8 @@
                 <input autocomplete="name" id="name" name="name" placeholder="e.g. Alex Morgan" required/>
 
                 <label for="email">Email address</label>
-                <input autocomplete="email" id="email" name="email" placeholder="alex@example.com" required type="email"/>
+                <input autocomplete="email" id="email" name="email" placeholder="alex@example.com" required
+                       type="email"/>
 
                 <button class="primary-button" type="submit">Create customer</button>
                 <p aria-live="polite" class="form-status" id="customerFormStatus"></p>
@@ -111,7 +112,8 @@
     </section>
 </main>
 
-<div aria-describedby="deleteCustomerDescription" aria-labelledby="deleteCustomerTitle" aria-modal="true" class="modal-backdrop" hidden id="deleteCustomerDialog" role="dialog">
+<div aria-describedby="deleteCustomerDescription" aria-labelledby="deleteCustomerTitle" aria-modal="true"
+     class="modal-backdrop" hidden id="deleteCustomerDialog" role="dialog">
     <div class="modal-panel">
         <p class="panel-kicker">Confirm deletion</p>
         <h2 id="deleteCustomerTitle">Delete customer?</h2>
@@ -120,7 +122,9 @@
         </p>
         <div class="modal-actions">
             <button class="secondary-button" id="cancelDeleteCustomerButton" type="button">Cancel</button>
-            <button class="primary-button danger-button" id="confirmDeleteCustomerButton" type="button">Delete customer</button>
+            <button class="primary-button danger-button" id="confirmDeleteCustomerButton" type="button">Delete
+                customer
+            </button>
         </div>
     </div>
 </div>
