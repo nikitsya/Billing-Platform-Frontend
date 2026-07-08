@@ -11,15 +11,15 @@ const subscriptionRows = document.getElementById("subscriptionRows")
 const subscriptionSummary = document.getElementById("subscriptionSummary")
 const subscriptionCount = document.getElementById("subscriptionCount")
 const subscriptionFormStatus = document.getElementById("subscriptionFormStatus")
-const deleteSubscriptionDialog = document.getElementById("deleteSubscriptionDialog")
-const deleteSubscriptionName = document.getElementById("deleteSubscriptionName")
-const cancelDeleteSubscriptionButton = document.getElementById("cancelDeleteSubscriptionButton")
-const confirmDeleteSubscriptionButton = document.getElementById("confirmDeleteSubscriptionButton")
-const deleteSubscriptionStatus = document.getElementById("deleteSubscriptionStatus")
+const cancelSubscriptionDialog = document.getElementById("cancelSubscriptionDialog")
+const cancelSubscriptionName = document.getElementById("cancelSubscriptionName")
+const closeCancelSubscriptionButton = document.getElementById("closeCancelSubscriptionButton")
+const confirmCancelSubscriptionButton = document.getElementById("confirmCancelSubscriptionButton")
+const cancelSubscriptionStatus = document.getElementById("cancelSubscriptionStatus")
 
 let subscriptions = []
-let deletingSubscriptionId = null
-let subscriptionPendingDeletion = null
+let cancellingSubscriptionId = null
+let subscriptionPendingCancellation = null
 let previouslyFocusedElement = null
 
 export function initialiseSubscriptions() {
@@ -31,10 +31,10 @@ export function initialiseSubscriptions() {
     refreshButton?.addEventListener("click", loadSubscriptions)
     document.addEventListener("billing:customers-updated", event => populateCustomerOptions(event.detail))
     document.addEventListener("billing:prices-updated", event => populatePriceOptions(event.detail))
-    cancelDeleteSubscriptionButton?.addEventListener("click", closeSubscriptionDeleteDialog)
-    confirmDeleteSubscriptionButton?.addEventListener("click", confirmSubscriptionDelete)
-    deleteSubscriptionDialog?.addEventListener("click", handleDeleteDialogBackdropClick)
-    document.addEventListener("keydown", handleDeleteDialogKeydown)
+    closeCancelSubscriptionButton?.addEventListener("click", closeSubscriptionCancelDialog)
+    confirmCancelSubscriptionButton?.addEventListener("click", confirmSubscriptionCancel)
+    cancelSubscriptionDialog?.addEventListener("click", handleCancelDialogBackdropClick)
+    document.addEventListener("keydown", handleCancelDialogKeydown)
 
     populateCustomerOptions(getCustomers())
     populatePriceOptions(getPrices())
@@ -129,7 +129,7 @@ function populateCustomerOptions(customers) {
     const currentValue = customerSelect.value
     customerSelect.replaceChildren(createOption("", "Select customer"))
 
-    const availableCustomers = customers.filter(customer => !hasSubscription(customer))
+    const availableCustomers = customers.filter(customer => !hasActiveSubscription(customer))
 
     availableCustomers.forEach(customer => {
         customerSelect.append(createOption(customer.id, `${customer.name} · ${customer.email}`))
@@ -188,7 +188,7 @@ function renderSubscriptions() {
             createCell(price?.product?.name || subscription.product?.name || "—"),
             createCell(price?.billingInterval || subscription.billingInterval || "—", "muted-cell"),
             createStatusCell(subscription.status),
-            createDeleteCell(subscription)
+            createCancelCell(subscription)
         )
 
         return row
@@ -199,49 +199,53 @@ function findCustomer(customerId) {
     return getCustomers().find(customer => customer.id === customerId)
 }
 
-function createDeleteCell(subscription) {
+function createCancelCell(subscription) {
     const cell = document.createElement("td")
     cell.className = "action-cell"
 
+    const isCancelled = isSubscriptionCancelled(subscription)
     const button = document.createElement("button")
     button.className = "delete-customer-button"
     button.type = "button"
     button.textContent = "×"
-    button.ariaLabel = `Delete ${getSubscriptionLabel(subscription)}`
-    button.disabled = deletingSubscriptionId === subscription.id
-    button.addEventListener("click", () => openSubscriptionDeleteDialog(subscription))
+    button.ariaLabel = isCancelled
+        ? `${getSubscriptionLabel(subscription)} is already cancelled`
+        : `Cancel ${getSubscriptionLabel(subscription)}`
+    button.disabled = cancellingSubscriptionId === subscription.id || isCancelled
+    button.classList.toggle("inactive-action-button", isCancelled)
+    button.addEventListener("click", () => openSubscriptionCancelDialog(subscription))
 
     cell.append(button)
     return cell
 }
 
-function openSubscriptionDeleteDialog(subscription) {
-    if (!deleteSubscriptionDialog || !subscription?.id || deletingSubscriptionId) {
+function openSubscriptionCancelDialog(subscription) {
+    if (!cancelSubscriptionDialog || !subscription?.id || cancellingSubscriptionId || isSubscriptionCancelled(subscription)) {
         return
     }
 
-    subscriptionPendingDeletion = subscription
+    subscriptionPendingCancellation = subscription
     previouslyFocusedElement = document.activeElement
 
-    if (deleteSubscriptionName) {
-        deleteSubscriptionName.textContent = getSubscriptionLabel(subscription)
+    if (cancelSubscriptionName) {
+        cancelSubscriptionName.textContent = getSubscriptionLabel(subscription)
     }
 
-    setStatus(deleteSubscriptionStatus, "")
-    deleteSubscriptionDialog.hidden = false
+    setStatus(cancelSubscriptionStatus, "")
+    cancelSubscriptionDialog.hidden = false
     document.body.classList.add("modal-open")
-    confirmDeleteSubscriptionButton?.focus()
+    confirmCancelSubscriptionButton?.focus()
 }
 
-function closeSubscriptionDeleteDialog() {
-    if (!deleteSubscriptionDialog || deletingSubscriptionId) {
+function closeSubscriptionCancelDialog() {
+    if (!cancelSubscriptionDialog || cancellingSubscriptionId) {
         return
     }
 
-    deleteSubscriptionDialog.hidden = true
+    cancelSubscriptionDialog.hidden = true
     document.body.classList.remove("modal-open")
-    subscriptionPendingDeletion = null
-    setStatus(deleteSubscriptionStatus, "")
+    subscriptionPendingCancellation = null
+    setStatus(cancelSubscriptionStatus, "")
 
     if (previouslyFocusedElement instanceof HTMLElement) {
         previouslyFocusedElement.focus()
@@ -250,54 +254,54 @@ function closeSubscriptionDeleteDialog() {
     previouslyFocusedElement = null
 }
 
-function handleDeleteDialogBackdropClick(event) {
-    if (event.target === deleteSubscriptionDialog) {
-        closeSubscriptionDeleteDialog()
+function handleCancelDialogBackdropClick(event) {
+    if (event.target === cancelSubscriptionDialog) {
+        closeSubscriptionCancelDialog()
     }
 }
 
-function handleDeleteDialogKeydown(event) {
-    if (event.key === "Escape" && !deleteSubscriptionDialog?.hidden) {
-        closeSubscriptionDeleteDialog()
+function handleCancelDialogKeydown(event) {
+    if (event.key === "Escape" && !cancelSubscriptionDialog?.hidden) {
+        closeSubscriptionCancelDialog()
     }
 }
 
-function confirmSubscriptionDelete() {
-    return handleSubscriptionDelete(subscriptionPendingDeletion)
+function confirmSubscriptionCancel() {
+    return handleSubscriptionCancel(subscriptionPendingCancellation)
 }
 
-async function handleSubscriptionDelete(subscription) {
-    if (!subscription?.id || deletingSubscriptionId) {
+async function handleSubscriptionCancel(subscription) {
+    if (!subscription?.id || cancellingSubscriptionId || isSubscriptionCancelled(subscription)) {
         return
     }
 
     const subscriptionLabel = getSubscriptionLabel(subscription)
-    deletingSubscriptionId = subscription.id
+    cancellingSubscriptionId = subscription.id
     renderSubscriptions()
-    setDeleteDialogLoading(true)
-    setStatus(deleteSubscriptionStatus, `Deleting ${subscriptionLabel}...`)
+    setCancelDialogLoading(true)
+    setStatus(cancelSubscriptionStatus, `Cancelling ${subscriptionLabel}...`)
 
     try {
-        const response = await sendRequest(`/subscriptions/${subscription.id}`, {
-            method: "DELETE"
+        const response = await sendRequest(`/subscriptions/${subscription.id}/cancel`, {
+            method: "POST"
         })
 
         if (response.error) {
-            throw new Error(getResponseError(response, "Unable to delete subscription"))
+            throw new Error(getResponseError(response, "Unable to cancel subscription"))
         }
 
-        setStatus(deleteSubscriptionStatus, "Subscription deleted successfully.", "success")
-        deletingSubscriptionId = null
-        closeSubscriptionDeleteDialog()
+        setStatus(cancelSubscriptionStatus, "Subscription cancelled successfully.", "success")
+        cancellingSubscriptionId = null
+        closeSubscriptionCancelDialog()
         await loadSubscriptions()
     } catch (error) {
-        setStatus(deleteSubscriptionStatus, getErrorMessage(error), "error")
+        setStatus(cancelSubscriptionStatus, getErrorMessage(error), "error")
     } finally {
-        if (deletingSubscriptionId !== null) {
-            deletingSubscriptionId = null
+        if (cancellingSubscriptionId !== null) {
+            cancellingSubscriptionId = null
             renderSubscriptions()
         }
-        setDeleteDialogLoading(false)
+        setCancelDialogLoading(false)
     }
 }
 
@@ -309,19 +313,21 @@ function getSubscriptionLabel(subscription) {
     return planLabel ? `${customerLabel} · ${planLabel}` : customerLabel
 }
 
-function setDeleteDialogLoading(isLoading) {
-    if (confirmDeleteSubscriptionButton) {
-        confirmDeleteSubscriptionButton.disabled = isLoading
-        confirmDeleteSubscriptionButton.textContent = isLoading ? "Deleting..." : "Delete subscription"
+function setCancelDialogLoading(isLoading) {
+    if (confirmCancelSubscriptionButton) {
+        confirmCancelSubscriptionButton.disabled = isLoading
+        confirmCancelSubscriptionButton.textContent = isLoading ? "Cancelling..." : "Cancel subscription"
     }
 
-    if (cancelDeleteSubscriptionButton) {
-        cancelDeleteSubscriptionButton.disabled = isLoading
+    if (closeCancelSubscriptionButton) {
+        closeCancelSubscriptionButton.disabled = isLoading
     }
 }
 
-function hasSubscription(customer) {
-    return subscriptions.some(subscription => getSubscriptionCustomerId(subscription) === Number(customer.id))
+function hasActiveSubscription(customer) {
+    return subscriptions.some(subscription => {
+        return getSubscriptionCustomerId(subscription) === Number(customer.id) && !isSubscriptionCancelled(subscription)
+    })
 }
 
 function getSubscriptionCustomerId(subscription) {
@@ -349,11 +355,21 @@ function createCell(value, className = "") {
 function createStatusCell(status = "INCOMPLETE") {
     const cell = document.createElement("td")
     const badge = document.createElement("span")
-    const normalisedStatus = status.toLowerCase().replaceAll("_", "-")
+    const displayStatus = normaliseSubscriptionStatus(status)
+    const normalisedStatus = displayStatus.toLowerCase().replaceAll("_", "-")
     badge.className = `status-badge ${normalisedStatus}`
-    badge.textContent = status.replaceAll("_", " ")
+    badge.textContent = displayStatus.replaceAll("_", " ")
     cell.append(badge)
     return cell
+}
+
+function isSubscriptionCancelled(subscription) {
+    return normaliseSubscriptionStatus(subscription?.status) === "CANCELLED"
+}
+
+function normaliseSubscriptionStatus(status = "INCOMPLETE") {
+    const statusValue = String(status || "INCOMPLETE").toUpperCase()
+    return statusValue === "CANCELED" ? "CANCELLED" : statusValue
 }
 
 function comparePrices(firstPrice, secondPrice) {

@@ -454,7 +454,7 @@ tbody tr:hover td {
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.delete-customer-button:hover {
+.delete-customer-button:not(:disabled):hover {
     background: var(--red-dark);
     border-color: var(--red-dark);
 }
@@ -462,6 +462,10 @@ tbody tr:hover td {
 .delete-customer-button:disabled {
     cursor: wait;
     opacity: 0.58;
+}
+
+.delete-customer-button.inactive-action-button:disabled {
+    cursor: default;
 }
 
 .empty-state {

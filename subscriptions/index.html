@@ -118,21 +118,21 @@
     </section>
 </main>
 
-<div aria-describedby="deleteSubscriptionDescription" aria-labelledby="deleteSubscriptionTitle" aria-modal="true"
-     class="modal-backdrop" hidden id="deleteSubscriptionDialog" role="dialog">
+<div aria-describedby="cancelSubscriptionDescription" aria-labelledby="cancelSubscriptionTitle" aria-modal="true"
+     class="modal-backdrop" hidden id="cancelSubscriptionDialog" role="dialog">
     <div class="modal-panel">
-        <p class="panel-kicker">Confirm deletion</p>
-        <h2 id="deleteSubscriptionTitle">Delete subscription?</h2>
-        <p id="deleteSubscriptionDescription">
-            This will remove <strong id="deleteSubscriptionName">this subscription</strong> from recurring billing.
+        <p class="panel-kicker">Confirm cancellation</p>
+        <h2 id="cancelSubscriptionTitle">Cancel subscription?</h2>
+        <p id="cancelSubscriptionDescription">
+            This will stop <strong id="cancelSubscriptionName">this subscription</strong> from recurring billing.
         </p>
         <div class="modal-actions">
-            <button class="secondary-button" id="cancelDeleteSubscriptionButton" type="button">Cancel</button>
-            <button class="primary-button danger-button" id="confirmDeleteSubscriptionButton" type="button">Delete
-                subscription
+            <button class="secondary-button" id="closeCancelSubscriptionButton" type="button">Cancel</button>
+            <button class="primary-button danger-button" id="confirmCancelSubscriptionButton" type="button">
+                Cancel subscription
             </button>
         </div>
-        <p aria-live="polite" class="modal-status" id="deleteSubscriptionStatus"></p>
+        <p aria-live="polite" class="modal-status" id="cancelSubscriptionStatus"></p>
     </div>
 </div>
 
