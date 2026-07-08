@@ -205,7 +205,7 @@ function createCancelCell(subscription) {
 
     const isCancelled = isSubscriptionCancelled(subscription)
     const button = document.createElement("button")
-    button.className = "delete-customer-button"
+    button.className = "danger-action-button"
     button.type = "button"
     button.textContent = "×"
     button.ariaLabel = isCancelled

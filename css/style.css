@@ -420,7 +420,7 @@ tbody tr:hover td {
     white-space: nowrap;
 }
 
-.delete-customer-button {
+.danger-action-button {
     position: relative;
     display: inline-block;
     width: 28px;
@@ -433,8 +433,8 @@ tbody tr:hover td {
     font-size: 0;
 }
 
-.delete-customer-button::before,
-.delete-customer-button::after {
+.danger-action-button::before,
+.danger-action-button::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -446,25 +446,25 @@ tbody tr:hover td {
     transform-origin: center;
 }
 
-.delete-customer-button::before {
+.danger-action-button::before {
     transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.delete-customer-button::after {
+.danger-action-button::after {
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.delete-customer-button:not(:disabled):hover {
+.danger-action-button:not(:disabled):hover {
     background: var(--red-dark);
     border-color: var(--red-dark);
 }
 
-.delete-customer-button:disabled {
+.danger-action-button:disabled {
     cursor: wait;
     opacity: 0.58;
 }
 
-.delete-customer-button.inactive-action-button:disabled {
+.danger-action-button.inactive-action-button:disabled {
     cursor: default;
 }
 

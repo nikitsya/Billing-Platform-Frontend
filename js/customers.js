@@ -137,7 +137,7 @@ function createDeleteCell(customer) {
     cell.className = "action-cell"
 
     const button = document.createElement("button")
-    button.className = "delete-customer-button"
+    button.className = "danger-action-button"
     button.type = "button"
     button.textContent = "×"
     button.ariaLabel = `Delete ${customer.name || "customer"}`
