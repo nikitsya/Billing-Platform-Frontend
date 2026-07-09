@@ -133,12 +133,17 @@ function createDeleteCell(customer) {
     const cell = document.createElement("td")
     cell.className = "action-cell"
 
+    const canDeleteCustomer = wasCustomerCreatedToday(customer)
     const button = document.createElement("button")
     button.className = "danger-action-button"
     button.type = "button"
     button.textContent = "×"
-    button.ariaLabel = `Delete ${customer.name || "customer"}`
-    button.disabled = deletingCustomerId === customer.id
+    button.ariaLabel = canDeleteCustomer
+        ? `Delete ${customer.name || "customer"}`
+        : `${customer.name || "Customer"} cannot be deleted because they were not created today`
+    button.title = canDeleteCustomer ? "Delete customer" : "Only customers created today can be deleted"
+    button.disabled = deletingCustomerId === customer.id || !canDeleteCustomer
+    button.classList.toggle("inactive-action-button", !canDeleteCustomer)
     button.addEventListener("click", () => openCustomerDeleteDialog(customer))
 
     cell.append(button)
@@ -146,7 +151,7 @@ function createDeleteCell(customer) {
 }
 
 function openCustomerDeleteDialog(customer) {
-    if (!deleteCustomerDialog || !customer?.id || deletingCustomerId) {
+    if (!deleteCustomerDialog || !customer?.id || deletingCustomerId || !wasCustomerCreatedToday(customer)) {
         return
     }
 
@@ -197,7 +202,7 @@ function confirmCustomerDelete() {
 }
 
 async function handleCustomerDelete(customer) {
-    if (!customer?.id || deletingCustomerId) {
+    if (!customer?.id || deletingCustomerId || !wasCustomerCreatedToday(customer)) {
         return
     }
 
@@ -231,6 +236,34 @@ async function handleCustomerDelete(customer) {
 
 function getCustomerLabel(customer) {
     return customer.name || customer.email || `customer #${customer.id}`
+}
+
+function wasCustomerCreatedToday(customer) {
+    const createdAt = customer.createdAt || customer.created_at || customer.createdDate || customer.created
+
+    if (!createdAt) {
+        return false
+    }
+
+    const createdDate = parseCustomerCreatedDate(createdAt)
+
+    if (Number.isNaN(createdDate.getTime())) {
+        return false
+    }
+
+    const today = new Date()
+    return createdDate.getFullYear() === today.getFullYear()
+        && createdDate.getMonth() === today.getMonth()
+        && createdDate.getDate() === today.getDate()
+}
+
+function parseCustomerCreatedDate(createdAt) {
+    if (typeof createdAt === "string" && /^\d{4}-\d{2}-\d{2}$/.test(createdAt)) {
+        const [year, month, day] = createdAt.split("-").map(Number)
+        return new Date(year, month - 1, day)
+    }
+
+    return new Date(createdAt)
 }
 
 function setDeleteDialogLoading(isLoading) {

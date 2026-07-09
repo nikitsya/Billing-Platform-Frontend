@@ -465,7 +465,10 @@ tbody tr:hover td {
 }
 
 .danger-action-button.inactive-action-button:disabled {
+    background: #9da8a0;
+    border-color: #9da8a0;
     cursor: default;
+    opacity: 0.8;
 }
 
 .empty-state {
