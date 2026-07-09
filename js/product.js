@@ -67,7 +67,7 @@ function renderCatalogue(products, prices) {
     }
 
     planList.replaceChildren(...products.map((product, index) => {
-        const productPrices = prices.filter(price => Number(price.product_id) === Number(product.id))
+        const productPrices = prices.filter(price => Number(price.productId) === Number(product.id))
         const article = document.createElement("article")
         article.className = "plan"
 
@@ -94,14 +94,14 @@ function renderCatalogue(products, prices) {
 
 function createPriceOption(price) {
     const option = document.createElement("div")
-    const interval = (price.billing_interval || "price").toLowerCase()
+    const interval = (price.billingInterval || "price").toLowerCase()
     option.className = `price-option ${interval === "yearly" ? "yearly" : ""}`
 
     const label = document.createElement("span")
     label.textContent = interval.replace("_", " ")
 
     const amount = document.createElement("strong")
-    amount.textContent = formatMoney(price.unit_amount_cents, price.currency)
+    amount.textContent = formatMoney(price.unitAmountCents, price.currency)
 
     option.append(label, amount)
     return option

@@ -94,8 +94,8 @@ async function handleSubscriptionSubmit(event) {
     setStatus(subscriptionFormStatus, "Creating subscription...")
 
     const payload = {
-        customer_id: Number(customerSelect.value),
-        price_id: Number(priceSelect.value)
+        customerId: Number(customerSelect.value),
+        priceId: Number(priceSelect.value)
     }
 
     try {
@@ -185,7 +185,7 @@ function renderSubscriptions() {
 
         row.append(
             createCell(customer?.name || customer?.email || `Customer #${getSubscriptionCustomerId(subscription) || "—"}`, "customer-name"),
-            createCell(getPriceProductName(price) || subscription.product_name || "—"),
+            createCell(getPriceProductName(price) || subscription.productName || "—"),
             createCell(getPriceBillingInterval(price) || getSubscriptionBillingInterval(subscription) || "—", "muted-cell"),
             createStatusCell(subscription.status),
             createCancelCell(subscription)
@@ -309,7 +309,7 @@ function getSubscriptionLabel(subscription) {
     const customer = subscription.customer || findCustomer(getSubscriptionCustomerId(subscription))
     const price = subscription.price || findPrice(getSubscriptionPriceId(subscription))
     const customerLabel = customer?.name || customer?.email || `subscription #${subscription.id}`
-    const planLabel = getPriceProductName(price) || subscription.product_name
+    const planLabel = getPriceProductName(price) || subscription.productName
     return planLabel ? `${customerLabel} · ${planLabel}` : customerLabel
 }
 
@@ -331,15 +331,15 @@ function hasActiveSubscription(customer) {
 }
 
 function getSubscriptionCustomerId(subscription) {
-    return Number(subscription.customer_id)
+    return Number(subscription.customerId)
 }
 
 function getSubscriptionPriceId(subscription) {
-    return Number(subscription.price_id)
+    return Number(subscription.priceId)
 }
 
 function getSubscriptionBillingInterval(subscription) {
-    return subscription.billing_interval
+    return subscription.billingInterval
 }
 
 function findPrice(priceId) {
@@ -386,20 +386,20 @@ function comparePrices(firstPrice, secondPrice) {
 }
 
 function getPriceBillingInterval(price) {
-    return price?.billing_interval || ""
+    return price?.billingInterval || ""
 }
 
 function getPriceProductId(price) {
-    return Number(price?.product_id)
+    return Number(price?.productId)
 }
 
 function getPriceProductName(price) {
     const productId = getPriceProductId(price)
-    return price?.product_name || (productId ? `Product #${productId}` : "")
+    return price?.productName || (productId ? `Product #${productId}` : "")
 }
 
 function getPriceUnitAmountCents(price) {
-    return price?.unit_amount_cents ?? 0
+    return price?.unitAmountCents ?? 0
 }
 
 function formatMoney(amountInCents, currency = "EUR") {
