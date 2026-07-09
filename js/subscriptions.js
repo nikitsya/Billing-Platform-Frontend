@@ -94,8 +94,8 @@ async function handleSubscriptionSubmit(event) {
     setStatus(subscriptionFormStatus, "Creating subscription...")
 
     const payload = {
-        customerId: Number(customerSelect.value),
-        priceId: Number(priceSelect.value)
+        customer_id: Number(customerSelect.value),
+        price_id: Number(priceSelect.value)
     }
 
     try {
@@ -149,12 +149,12 @@ function populatePriceOptions(prices) {
     priceSelect.replaceChildren(createOption("", "Select plan"))
 
     prices
-        .filter(price => price.billingInterval.toLowerCase() !== "one_time")
+        .filter(price => getPriceBillingInterval(price).toLowerCase() !== "one_time")
         .sort(comparePrices)
         .forEach(price => {
-            const productName = price.product?.name || "Plan"
-            const billingInterval = price.billingInterval?.toLowerCase() || "billing period"
-            const amount = formatMoney(price.unitAmountCents, price.currency)
+            const productName = getPriceProductName(price)
+            const billingInterval = getPriceBillingInterval(price).toLowerCase()
+            const amount = formatMoney(getPriceUnitAmountCents(price), price.currency)
             priceSelect.append(createOption(price.id, `${productName} · ${amount} / ${billingInterval}`))
         })
 
@@ -179,14 +179,14 @@ function renderSubscriptions() {
     }
 
     subscriptionRows.replaceChildren(...subscriptions.map(subscription => {
-        const customer = subscription.customer || findCustomer(subscription.customerId)
-        const price = subscription.price || findPrice(subscription.priceId)
+        const customer = subscription.customer || findCustomer(getSubscriptionCustomerId(subscription))
+        const price = subscription.price || findPrice(getSubscriptionPriceId(subscription))
         const row = document.createElement("tr")
 
         row.append(
-            createCell(customer?.name || customer?.email || `Customer #${subscription.customerId ?? "—"}`, "customer-name"),
-            createCell(price?.product?.name || subscription.product?.name || "—"),
-            createCell(price?.billingInterval || subscription.billingInterval || "—", "muted-cell"),
+            createCell(customer?.name || customer?.email || `Customer #${getSubscriptionCustomerId(subscription) || "—"}`, "customer-name"),
+            createCell(getPriceProductName(price) || subscription.product_name || "—"),
+            createCell(getPriceBillingInterval(price) || getSubscriptionBillingInterval(subscription) || "—", "muted-cell"),
             createStatusCell(subscription.status),
             createCancelCell(subscription)
         )
@@ -306,10 +306,10 @@ async function handleSubscriptionCancel(subscription) {
 }
 
 function getSubscriptionLabel(subscription) {
-    const customer = subscription.customer || findCustomer(subscription.customerId)
-    const price = subscription.price || findPrice(subscription.priceId)
+    const customer = subscription.customer || findCustomer(getSubscriptionCustomerId(subscription))
+    const price = subscription.price || findPrice(getSubscriptionPriceId(subscription))
     const customerLabel = customer?.name || customer?.email || `subscription #${subscription.id}`
-    const planLabel = price?.product?.name || subscription.product?.name
+    const planLabel = getPriceProductName(price) || subscription.product_name
     return planLabel ? `${customerLabel} · ${planLabel}` : customerLabel
 }
 
@@ -331,11 +331,19 @@ function hasActiveSubscription(customer) {
 }
 
 function getSubscriptionCustomerId(subscription) {
-    return Number(subscription.customer?.id ?? subscription.customerId)
+    return Number(subscription.customer_id)
+}
+
+function getSubscriptionPriceId(subscription) {
+    return Number(subscription.price_id)
+}
+
+function getSubscriptionBillingInterval(subscription) {
+    return subscription.billing_interval
 }
 
 function findPrice(priceId) {
-    return getPrices().find(price => price.id === priceId)
+    return getPrices().find(price => Number(price.id) === Number(priceId))
 }
 
 function createOption(value, label) {
@@ -373,9 +381,25 @@ function normaliseSubscriptionStatus(status = "INCOMPLETE") {
 }
 
 function comparePrices(firstPrice, secondPrice) {
-    const firstName = firstPrice.product?.name || ""
-    const secondName = secondPrice.product?.name || ""
-    return firstName.localeCompare(secondName) || firstPrice.unitAmountCents - secondPrice.unitAmountCents
+    return getPriceProductId(firstPrice) - getPriceProductId(secondPrice)
+        || getPriceUnitAmountCents(firstPrice) - getPriceUnitAmountCents(secondPrice)
+}
+
+function getPriceBillingInterval(price) {
+    return price?.billing_interval || ""
+}
+
+function getPriceProductId(price) {
+    return Number(price?.product_id)
+}
+
+function getPriceProductName(price) {
+    const productId = getPriceProductId(price)
+    return price?.product_name || (productId ? `Product #${productId}` : "")
+}
+
+function getPriceUnitAmountCents(price) {
+    return price?.unit_amount_cents ?? 0
 }
 
 function formatMoney(amountInCents, currency = "EUR") {
