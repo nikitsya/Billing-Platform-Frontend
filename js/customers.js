@@ -11,6 +11,7 @@ const deleteCustomerDialog = document.getElementById("deleteCustomerDialog")
 const deleteCustomerName = document.getElementById("deleteCustomerName")
 const cancelDeleteCustomerButton = document.getElementById("cancelDeleteCustomerButton")
 const confirmDeleteCustomerButton = document.getElementById("confirmDeleteCustomerButton")
+const deleteCustomerStatus = document.getElementById("deleteCustomerStatus")
 
 let customers = []
 let deletingCustomerId = null
@@ -160,6 +161,7 @@ function openCustomerDeleteDialog(customer) {
         deleteCustomerName.textContent = getCustomerLabel(customer)
     }
 
+    setStatus(deleteCustomerStatus, "")
     deleteCustomerDialog.hidden = false
     document.body.classList.add("modal-open")
     confirmDeleteCustomerButton?.focus()
@@ -173,6 +175,7 @@ function closeCustomerDeleteDialog() {
     deleteCustomerDialog.hidden = true
     document.body.classList.remove("modal-open")
     customerPendingDeletion = null
+    setStatus(deleteCustomerStatus, "")
 
     if (previouslyFocusedElement instanceof HTMLElement) {
         previouslyFocusedElement.focus()
@@ -206,7 +209,7 @@ async function handleCustomerDelete(customer) {
     deletingCustomerId = customer.id
     renderCustomers()
     setDeleteDialogLoading(true)
-    setStatus(customerFormStatus, `Deleting ${customerLabel}...`)
+    setStatus(deleteCustomerStatus, `Deleting ${customerLabel}...`)
 
     try {
         const response = await sendRequest(`/customers/${customer.id}`, {
@@ -217,12 +220,12 @@ async function handleCustomerDelete(customer) {
             throw new Error(getResponseError(response, "Unable to delete customer"))
         }
 
-        setStatus(customerFormStatus, "Customer deleted successfully.", "success")
+        setStatus(deleteCustomerStatus, "Customer deleted successfully.", "success")
         deletingCustomerId = null
         closeCustomerDeleteDialog()
         await loadCustomers()
     } catch (error) {
-        setStatus(customerFormStatus, getErrorMessage(error), "error")
+        setStatus(deleteCustomerStatus, getErrorMessage(error), "error")
     } finally {
         if (deletingCustomerId !== null) {
             deletingCustomerId = null
