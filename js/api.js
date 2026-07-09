@@ -4,26 +4,22 @@ export async function sendRequest(path, options = {}) {
     const response = await fetch(`${API_BASE_URL}${path}`, options)
     const body = await response.text()
     const data = parseBody(body)
+    const message = getResponseMessage(data) || getResponseMessage(body)
 
     return {
         url: response.url,
         status: response.status,
         data,
         body,
+        message,
         error: !response.ok
     }
 }
 
-export function getResponseError(response, fallbackMessage) {
-    if (typeof response.data === "string" && response.data.trim()) {
-        return response.data
+export function throwResponseError(response) {
+    if (response.error) {
+        throw new Error(response.message || "Request failed.")
     }
-
-    if (response.data?.message) {
-        return response.data.message
-    }
-
-    return `${fallbackMessage} (${response.status})`
 }
 
 function parseBody(body) {
@@ -36,4 +32,28 @@ function parseBody(body) {
     } catch {
         return body
     }
+}
+
+function getResponseMessage(body) {
+    if (!body) {
+        return ""
+    }
+
+    if (typeof body === "string") {
+        const trimmedBody = body.trim()
+
+        if (!trimmedBody) {
+            return ""
+        }
+
+        const parsedBody = parseBody(trimmedBody)
+
+        return parsedBody === trimmedBody ? "" : getResponseMessage(parsedBody)
+    }
+
+    if (typeof body.message === "string" && body.message.trim()) {
+        return body.message.trim()
+    }
+
+    return getResponseMessage(body.body)
 }

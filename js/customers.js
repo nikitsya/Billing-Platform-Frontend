@@ -1,5 +1,5 @@
-import {getResponseError, sendRequest} from "./api.js"
-import {getErrorMessage, setStatus} from "./result.js"
+import {sendRequest, throwResponseError} from "./api.js"
+import {escapeHtml, getErrorMessage, setStatus} from "./result.js"
 
 const customerForm = document.getElementById("customerForm")
 const allCustomersButton = document.getElementById("allCustomersButton")
@@ -41,9 +41,7 @@ export async function loadCustomers() {
 
     try {
         const response = await sendRequest("/customers")
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to load customers"))
-        }
+        throwResponseError(response)
 
         customers = Array.isArray(response.data) ? response.data : []
         renderCustomers()
@@ -83,9 +81,7 @@ async function handleCustomerFormSubmit(event) {
             body: JSON.stringify(payload)
         })
 
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to create customer"))
-        }
+        throwResponseError(response)
 
         customerForm.reset()
         setStatus(customerFormStatus, "Customer created successfully.", "success")
@@ -216,9 +212,7 @@ async function handleCustomerDelete(customer) {
             method: "DELETE"
         })
 
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to delete customer"))
-        }
+        throwResponseError(response)
 
         setStatus(deleteCustomerStatus, "Customer deleted successfully.", "success")
         deletingCustomerId = null
@@ -251,7 +245,7 @@ function setDeleteDialogLoading(isLoading) {
 }
 
 function emptyRow(message, colspan) {
-    return `<tr><td class="empty-state" colspan="${colspan}">${message}</td></tr>`
+    return `<tr><td class="empty-state" colspan="${colspan}">${escapeHtml(message)}</td></tr>`
 }
 
 function notifyCustomersUpdated() {

@@ -1,4 +1,5 @@
-import {sendRequest} from "./api.js"
+import {sendRequest, throwResponseError} from "./api.js"
+import {getErrorMessage} from "./result.js"
 
 const pingButton = document.getElementById("pingButton")
 const apiStatus = document.getElementById("apiStatus")
@@ -14,14 +15,12 @@ async function checkPing() {
 
     try {
         const response = await sendRequest("/ping")
-        if (response.error) {
-            throw new Error()
-        }
+        throwResponseError(response)
 
         apiStatus.textContent = "API is online"
-    } catch {
+    } catch (error) {
         pingButton.classList.add("is-error")
-        apiStatus.textContent = "API is unavailable"
+        apiStatus.textContent = getErrorMessage(error, "API is unavailable")
     } finally {
         pingButton.disabled = false
     }

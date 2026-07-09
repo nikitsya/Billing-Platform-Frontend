@@ -1,12 +1,10 @@
-import {getResponseError, sendRequest} from "./api.js"
+import {sendRequest, throwResponseError} from "./api.js"
 
 let prices = []
 
 export async function loadPrices() {
     const response = await sendRequest("/prices")
-    if (response.error) {
-        throw new Error(getResponseError(response, "Unable to load prices"))
-    }
+    throwResponseError(response)
 
     prices = Array.isArray(response.data) ? response.data : []
     document.dispatchEvent(new CustomEvent("billing:prices-updated", {

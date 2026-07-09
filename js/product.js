@@ -1,5 +1,5 @@
-import {getResponseError, sendRequest} from "./api.js"
-import {getErrorMessage} from "./result.js"
+import {sendRequest, throwResponseError} from "./api.js"
+import {escapeHtml, getErrorMessage} from "./result.js"
 import {loadPrices} from "./price.js"
 
 const refreshButton = document.getElementById("allProductsButton")
@@ -29,9 +29,7 @@ export async function loadCatalogue() {
             loadPrices()
         ])
 
-        if (productResponse.error) {
-            throw new Error(getResponseError(productResponse, "Unable to load products"))
-        }
+        throwResponseError(productResponse)
 
         products = Array.isArray(productResponse.data) ? productResponse.data : []
         renderCatalogue(products, prices)
@@ -49,7 +47,7 @@ export async function loadCatalogue() {
             priceCount.textContent = "—"
         }
         if (planList) {
-            planList.innerHTML = `<p class="empty-state">${getErrorMessage(error, "The plan catalogue is unavailable.")}</p>`
+            planList.innerHTML = `<p class="empty-state">${escapeHtml(getErrorMessage(error, "The plan catalogue is unavailable."))}</p>`
         }
     } finally {
         setLoadingState(false)

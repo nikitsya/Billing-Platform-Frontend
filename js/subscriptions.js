@@ -1,7 +1,7 @@
-import {getResponseError, sendRequest} from "./api.js"
+import {sendRequest, throwResponseError} from "./api.js"
 import {getCustomers, loadCustomers} from "./customers.js"
 import {getPrices, loadPrices} from "./price.js"
-import {getErrorMessage, setStatus} from "./result.js"
+import {escapeHtml, getErrorMessage, setStatus} from "./result.js"
 
 const subscriptionForm = document.getElementById("subscriptionForm")
 const customerSelect = document.getElementById("subscriptionCustomer")
@@ -65,9 +65,7 @@ async function loadSubscriptions() {
 
     try {
         const response = await sendRequest("/subscriptions")
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to load subscriptions"))
-        }
+        throwResponseError(response)
 
         subscriptions = Array.isArray(response.data) ? response.data : []
         renderSubscriptions()
@@ -107,9 +105,7 @@ async function handleSubscriptionSubmit(event) {
             body: JSON.stringify(payload)
         })
 
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to create subscription"))
-        }
+        throwResponseError(response)
 
         subscriptionForm.reset()
         setStatus(subscriptionFormStatus, "Subscription created successfully.", "success")
@@ -286,9 +282,7 @@ async function handleSubscriptionCancel(subscription) {
             method: "POST"
         })
 
-        if (response.error) {
-            throw new Error(getResponseError(response, "Unable to cancel subscription"))
-        }
+        throwResponseError(response)
 
         setStatus(cancelSubscriptionStatus, "Subscription cancelled successfully.", "success")
         cancellingSubscriptionId = null
@@ -410,7 +404,7 @@ function formatMoney(amountInCents, currency = "EUR") {
 }
 
 function emptyRow(message, colspan) {
-    return `<tr><td class="empty-state" colspan="${colspan}">${message}</td></tr>`
+    return `<tr><td class="empty-state" colspan="${colspan}">${escapeHtml(message)}</td></tr>`
 }
 
 function setLoadingState(isLoading) {
