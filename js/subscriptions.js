@@ -1,6 +1,7 @@
 import {sendRequest, throwResponseError} from "./api.js"
 import {getCustomers, loadCustomers} from "./customers.js"
 import {getPrices, loadPrices} from "./price.js"
+import {getProducts, loadProducts} from "./product.js"
 import {escapeHtml, getErrorMessage, setStatus} from "./result.js"
 
 const subscriptionForm = document.getElementById("subscriptionForm")
@@ -31,6 +32,7 @@ export function initialiseSubscriptions() {
     refreshButton?.addEventListener("click", loadSubscriptions)
     document.addEventListener("billing:customers-updated", event => populateCustomerOptions(event.detail))
     document.addEventListener("billing:prices-updated", event => populatePriceOptions(event.detail))
+    document.addEventListener("billing:products-updated", handleProductsUpdated)
     closeCancelSubscriptionButton?.addEventListener("click", closeSubscriptionCancelDialog)
     confirmCancelSubscriptionButton?.addEventListener("click", confirmSubscriptionCancel)
     cancelSubscriptionDialog?.addEventListener("click", handleCancelDialogBackdropClick)
@@ -55,8 +57,21 @@ async function loadSubscriptionFormOptions() {
 
     try {
         await Promise.all(requests)
+        await loadProductNames()
     } catch (error) {
         setStatus(subscriptionFormStatus, getErrorMessage(error), "error")
+    }
+}
+
+async function loadProductNames() {
+    if (getProducts().length) {
+        return
+    }
+
+    try {
+        await loadProducts()
+    } catch {
+        renderSubscriptions()
     }
 }
 
@@ -155,6 +170,11 @@ function populatePriceOptions(prices) {
         })
 
     priceSelect.value = currentValue
+}
+
+function handleProductsUpdated() {
+    populatePriceOptions(getPrices())
+    renderSubscriptions()
 }
 
 function renderSubscriptions() {
@@ -340,6 +360,10 @@ function findPrice(priceId) {
     return getPrices().find(price => Number(price.id) === Number(priceId))
 }
 
+function findProduct(productId) {
+    return getProducts().find(product => Number(product.id) === Number(productId))
+}
+
 function createOption(value, label) {
     const option = document.createElement("option")
     option.value = value
@@ -389,7 +413,8 @@ function getPriceProductId(price) {
 
 function getPriceProductName(price) {
     const productId = getPriceProductId(price)
-    return price?.productName || (productId ? `Product #${productId}` : "")
+    const product = findProduct(productId)
+    return price?.productName || product?.name || (productId ? `Product #${productId}` : "")
 }
 
 function getPriceUnitAmountCents(price) {

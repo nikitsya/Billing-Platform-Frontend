@@ -24,15 +24,11 @@ export async function loadCatalogue() {
     setLoadingState(true)
 
     try {
-        const [productResponse, prices] = await Promise.all([
-            sendRequest("/products"),
+        const [loadedProducts, prices] = await Promise.all([
+            loadProducts(),
             loadPrices()
         ])
-
-        throwResponseError(productResponse)
-
-        products = Array.isArray(productResponse.data) ? productResponse.data : []
-        renderCatalogue(products, prices)
+        renderCatalogue(loadedProducts, prices)
         if (productCount) {
             productCount.textContent = products.length
         }
@@ -52,6 +48,21 @@ export async function loadCatalogue() {
     } finally {
         setLoadingState(false)
     }
+}
+
+export async function loadProducts() {
+    const response = await sendRequest("/products")
+    throwResponseError(response)
+
+    products = Array.isArray(response.data) ? response.data : []
+    document.dispatchEvent(new CustomEvent("billing:products-updated", {
+        detail: products
+    }))
+    return products
+}
+
+export function getProducts() {
+    return products
 }
 
 function renderCatalogue(products, prices) {
