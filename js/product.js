@@ -76,7 +76,9 @@ function renderCatalogue(products, prices) {
     }
 
     planList.replaceChildren(...products.map((product, index) => {
-        const productPrices = prices.filter(price => Number(price.productId) === Number(product.id))
+        const productPrices = prices
+            .filter(price => Number(price.productId) === Number(product.id))
+            .sort(comparePricesByInterval)
         const article = document.createElement("article")
         article.className = "plan"
 
@@ -114,6 +116,21 @@ function createPriceOption(price) {
 
     option.append(label, amount)
     return option
+}
+
+function comparePricesByInterval(firstPrice, secondPrice) {
+    return getIntervalRank(firstPrice.billingInterval) - getIntervalRank(secondPrice.billingInterval)
+        || (firstPrice.unitAmountCents ?? 0) - (secondPrice.unitAmountCents ?? 0)
+}
+
+function getIntervalRank(interval) {
+    const intervalRanks = {
+        monthly: 1,
+        yearly: 2,
+        one_time: 3
+    }
+
+    return intervalRanks[String(interval || "").toLowerCase()] || 4
 }
 
 function formatMoney(amountInCents, currency = "EUR") {

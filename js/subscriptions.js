@@ -400,7 +400,18 @@ function normaliseSubscriptionStatus(status = "INCOMPLETE") {
 
 function comparePrices(firstPrice, secondPrice) {
     return getPriceProductId(firstPrice) - getPriceProductId(secondPrice)
+        || getIntervalRank(getPriceBillingInterval(firstPrice)) - getIntervalRank(getPriceBillingInterval(secondPrice))
         || getPriceUnitAmountCents(firstPrice) - getPriceUnitAmountCents(secondPrice)
+}
+
+function getIntervalRank(interval) {
+    const intervalRanks = {
+        monthly: 1,
+        yearly: 2,
+        one_time: 3
+    }
+
+    return intervalRanks[String(interval || "").toLowerCase()] || 4
 }
 
 function getPriceBillingInterval(price) {
