@@ -10,7 +10,7 @@
     <link href="../icons/icon-32.png" rel="shortcut icon" type="image/png"/>
     <link href="../icons/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
     <link href="../manifest.webmanifest" rel="manifest"/>
-    <title>Subscriptions | Billing Platform</title>
+    <title>Payments | Billing Platform</title>
     <link href="../css/style.css" rel="stylesheet"/>
 </head>
 <body>
@@ -33,11 +33,11 @@
             <span aria-hidden="true">03</span>
             Products & Prices
         </a>
-        <a class="nav-link is-active" href="./">
+        <a class="nav-link" href="../subscriptions/">
             <span aria-hidden="true">04</span>
             Subscriptions
         </a>
-        <a class="nav-link" href="../payments/">
+        <a class="nav-link is-active" href="./">
             <span aria-hidden="true">05</span>
             Payments
         </a>
@@ -56,46 +56,62 @@
     <header class="topbar">
         <div>
             <p class="eyebrow">Operations workspace</p>
-            <h1>Subscriptions</h1>
+            <h1>Payments</h1>
         </div>
-        <p class="topbar-note">Recurring billing assignments by customer and plan.</p>
+        <p class="topbar-note">One-off charges and payment intent confirmation.</p>
     </header>
 
-    <section aria-labelledby="subscriptionsTitle" class="section" id="subscriptions">
+    <section aria-labelledby="paymentsTitle" class="section" id="payments">
         <div class="section-heading">
             <div>
-                <p class="section-number">04 / Subscriptions</p>
-                <h2 id="subscriptionsTitle">Recurring billing</h2>
+                <p class="section-number">05 / Payments</p>
+                <h2 id="paymentsTitle">Payment intents</h2>
             </div>
-            <button class="secondary-button" id="allSubscriptionsButton" type="button">Refresh subscriptions</button>
+            <button class="secondary-button" id="allPaymentsButton" type="button">Refresh payments</button>
         </div>
 
-        <div class="subscription-layout">
-            <form class="subscription-form" id="subscriptionForm">
+        <div class="payment-layout">
+            <form class="payment-form" id="paymentForm">
                 <div>
-                    <p class="panel-kicker">New subscription</p>
-                    <h3>Assign a plan</h3>
+                    <p class="panel-kicker">New payment</p>
+                    <h3>Create payment</h3>
                 </div>
 
-                <label for="subscriptionCustomer">Customer</label>
-                <select id="subscriptionCustomer" name="customerId" required>
+                <label for="paymentCustomer">Customer</label>
+                <select id="paymentCustomer" name="customerId" required>
                     <option value="">Select customer</option>
                 </select>
 
-                <label for="subscriptionPrice">Plan and price</label>
-                <select id="subscriptionPrice" name="priceId" required>
-                    <option value="">Select plan</option>
+                <label for="paymentPrice">One-time price</label>
+                <select id="paymentPrice" name="priceId">
+                    <option value="">Manual amount</option>
                 </select>
 
-                <button class="primary-button" type="submit">Create subscription</button>
-                <p aria-live="polite" class="form-status" id="subscriptionFormStatus"></p>
+                <div class="field-grid">
+                    <div>
+                        <label for="paymentAmount">Amount</label>
+                        <input id="paymentAmount" inputmode="decimal" min="0.01" name="amount" placeholder="49.99"
+                               required step="0.01" type="number"/>
+                    </div>
+                    <div>
+                        <label for="paymentCurrency">Currency</label>
+                        <select id="paymentCurrency" name="currency" required>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="primary-button" type="submit">Create payment</button>
+                <p aria-live="polite" class="form-status" id="paymentFormStatus"></p>
             </form>
 
-            <div class="data-panel subscription-panel">
+            <div class="data-panel payment-panel">
                 <div class="panel-header">
                     <div>
-                        <h3>All subscriptions</h3>
-                        <p id="subscriptionSummary">Loading subscription records...</p>
+                        <h3>All payment intents</h3>
+                        <p id="paymentSummary">Loading payment intents...</p>
                     </div>
                 </div>
 
@@ -103,16 +119,17 @@
                     <table>
                         <thead>
                         <tr>
+                            <th scope="col">ID</th>
                             <th scope="col">Customer</th>
-                            <th scope="col">Plan</th>
-                            <th scope="col">Interval</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Created</th>
                             <th scope="col">Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="subscriptionRows">
+                        <tbody id="paymentRows">
                         <tr>
-                            <td class="empty-state" colspan="5">Loading subscriptions...</td>
+                            <td class="empty-state" colspan="6">Loading payment intents...</td>
                         </tr>
                         </tbody>
                     </table>
@@ -121,24 +138,6 @@
         </div>
     </section>
 </main>
-
-<div aria-describedby="cancelSubscriptionDescription" aria-labelledby="cancelSubscriptionTitle" aria-modal="true"
-     class="modal-backdrop" hidden id="cancelSubscriptionDialog" role="dialog">
-    <div class="modal-panel">
-        <p class="panel-kicker">Confirm cancellation</p>
-        <h2 id="cancelSubscriptionTitle">Cancel subscription?</h2>
-        <p id="cancelSubscriptionDescription">
-            This will stop <strong id="cancelSubscriptionName">this subscription</strong> from recurring billing.
-        </p>
-        <div class="modal-actions">
-            <button class="secondary-button" id="closeCancelSubscriptionButton" type="button">Cancel</button>
-            <button class="primary-button danger-button" id="confirmCancelSubscriptionButton" type="button">
-                Cancel subscription
-            </button>
-        </div>
-        <p aria-live="polite" class="modal-status" id="cancelSubscriptionStatus"></p>
-    </div>
-</div>
 
 <script src="../index.js" type="module"></script>
 </body>

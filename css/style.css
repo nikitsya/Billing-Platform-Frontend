@@ -321,14 +321,16 @@ h2 {
 }
 
 .customer-layout,
-.subscription-layout {
+.subscription-layout,
+.payment-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.75fr);
     gap: 32px;
     align-items: start;
 }
 
-.subscription-layout {
+.subscription-layout,
+.payment-layout {
     grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.6fr);
 }
 
@@ -357,7 +359,8 @@ h3 {
 
 .panel-header p,
 .create-panel > p,
-.subscription-form > div + p {
+.subscription-form > div + p,
+.payment-form > div + p {
     margin: 6px 0 0;
     color: var(--muted);
     font-size: 0.75rem;
@@ -471,6 +474,26 @@ tbody tr:hover td {
     opacity: 0.8;
 }
 
+.inline-action-button {
+    min-height: 34px;
+    padding: 0 12px;
+    color: var(--surface);
+    background: var(--green);
+    border: 2px solid var(--green);
+    font-size: 0.68rem;
+    font-weight: 900;
+}
+
+.inline-action-button:not(:disabled):hover {
+    color: var(--green-dark);
+    background: var(--surface);
+}
+
+.inline-action-button:disabled {
+    cursor: default;
+    opacity: 0.54;
+}
+
 .empty-state {
     padding: 34px 18px;
     color: var(--muted);
@@ -478,7 +501,8 @@ tbody tr:hover td {
 }
 
 .create-panel,
-.subscription-form {
+.subscription-form,
+.payment-form {
     display: grid;
     gap: 10px;
     padding: 24px;
@@ -489,15 +513,23 @@ tbody tr:hover td {
 }
 
 .create-panel h3,
-.subscription-form h3 {
+.subscription-form h3,
+.payment-form h3 {
     color: var(--surface);
     font-family: Georgia, "Times New Roman", serif;
     font-size: 1.5rem;
 }
 
 .create-panel > p:not(.panel-kicker),
-.subscription-form p:not(.panel-kicker) {
+.subscription-form p:not(.panel-kicker),
+.payment-form p:not(.panel-kicker) {
     color: #abc2b3;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr 110px;
+    gap: 12px;
 }
 
 label {
@@ -760,6 +792,26 @@ select:focus {
     background: #f4e4a9;
 }
 
+.status-badge.requires-confirmation {
+    color: #6b4f00;
+    background: #f4e4a9;
+}
+
+.status-badge.processing {
+    color: #0d4f68;
+    background: #d7edf6;
+}
+
+.status-badge.succeeded {
+    color: var(--green-dark);
+    background: var(--green-light);
+}
+
+.status-badge.failed {
+    color: var(--red-dark);
+    background: var(--red-light);
+}
+
 footer {
     display: flex;
     justify-content: space-between;
@@ -801,11 +853,13 @@ select:focus-visible {
     }
 
     .customer-layout,
-    .subscription-layout {
+    .subscription-layout,
+    .payment-layout {
         grid-template-columns: 1fr;
     }
 
-    .subscription-form {
+    .subscription-form,
+    .payment-form {
         grid-row: 1;
     }
 
@@ -966,8 +1020,13 @@ select:focus-visible {
     }
 
     .create-panel,
-    .subscription-form {
+    .subscription-form,
+    .payment-form {
         padding: 20px;
+    }
+
+    .field-grid {
+        grid-template-columns: 1fr;
     }
 
     .price-options {
