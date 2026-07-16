@@ -14,43 +14,7 @@
     <link href="../css/style.css" rel="stylesheet"/>
 </head>
 <body>
-<aside class="sidebar">
-    <a aria-label="Billing Platform dashboard" class="brand" href="../overview/">
-        <span class="brand-mark">BP</span>
-        <span>Billing<br/>Platform</span>
-    </a>
-
-    <nav aria-label="Dashboard pages">
-        <a class="nav-link" href="../overview/">
-            <span aria-hidden="true">01</span>
-            Overview
-        </a>
-        <a class="nav-link" href="../customers/">
-            <span aria-hidden="true">02</span>
-            Customers
-        </a>
-        <a class="nav-link is-active" href="./">
-            <span aria-hidden="true">03</span>
-            Products & Prices
-        </a>
-        <a class="nav-link" href="../subscriptions/">
-            <span aria-hidden="true">04</span>
-            Subscriptions
-        </a>
-        <a class="nav-link" href="../payments/">
-            <span aria-hidden="true">05</span>
-            Payments
-        </a>
-    </nav>
-
-    <button class="health-check" id="pingButton" type="button">
-        <span aria-hidden="true" class="health-dot"></span>
-        <span>
-            <strong>API status</strong>
-            <small id="apiStatus">Check connection</small>
-        </span>
-    </button>
-</aside>
+<aside class="sidebar" data-active-page="products-and-prices"></aside>
 
 <main>
     <header class="topbar">

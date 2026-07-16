@@ -1,10 +1,17 @@
 import {sendRequest, throwResponseError} from "./api.js"
 import {getErrorMessage} from "./result.js"
 
-const pingButton = document.getElementById("pingButton")
-const apiStatus = document.getElementById("apiStatus")
+let pingButton = null
+let apiStatus = null
 
 export function initialisePing() {
+    pingButton = document.getElementById("pingButton")
+    apiStatus = document.getElementById("apiStatus")
+
+    if (!pingButton || !apiStatus) {
+        return
+    }
+
     pingButton.addEventListener("click", checkPing)
 }
 
