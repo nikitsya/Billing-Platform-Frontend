@@ -28,6 +28,12 @@ const navItems = [
         number: "05",
         label: "Payments",
         href: "../payments/"
+    },
+    {
+        id: "ask-ai",
+        number: "06",
+        label: "Ask AI",
+        href: "../ask-ai/"
     }
 ]
 
@@ -40,6 +46,11 @@ export function initialiseSidebar() {
 
     const activePage = sidebar.dataset.activePage
     sidebar.replaceChildren(createBrand(), createNavigation(activePage), createHealthCheck())
+    const navigation = sidebar.querySelector("nav")
+    const activeLink = navigation.querySelector("[aria-current='page']")
+    if (activeLink) {
+        navigation.scrollLeft = activeLink.offsetLeft - navigation.offsetLeft
+    }
 }
 
 function createBrand() {
@@ -67,6 +78,9 @@ function createNavigation(activePage) {
         const link = document.createElement("a")
         link.className = `nav-link${item.id === activePage ? " is-active" : ""}`
         link.href = item.href
+        if (item.id === activePage) {
+            link.setAttribute("aria-current", "page")
+        }
 
         const number = document.createElement("span")
         number.setAttribute("aria-hidden", "true")

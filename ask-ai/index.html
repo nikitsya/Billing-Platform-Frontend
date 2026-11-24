@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="#0b6b3a" name="theme-color"/>
+    <meta content="Ask about the architecture, features and implementation of Billing Platform." name="description"/>
+    <link href="../icons/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+    <link href="../icons/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="../manifest.webmanifest" rel="manifest"/>
+    <title>Ask AI | Billing Platform</title>
+    <link href="../css/style.css" rel="stylesheet"/>
+    <link href="../css/project-chat.css" rel="stylesheet"/>
+</head>
+<body>
+<aside class="sidebar" data-active-page="ask-ai"></aside>
+<main>
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Explore the project</p>
+            <h1>Ask about Billing Platform</h1>
+        </div>
+        <p class="topbar-note">Architecture, implementation and the decisions behind the code.</p>
+    </header>
+
+    <section aria-labelledby="chatTitle" class="section chat-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-number">06 / Ask AI</p>
+                <h2 id="chatTitle">Project assistant</h2>
+            </div>
+            <button class="secondary-button" disabled id="newConversation" type="button">New conversation</button>
+        </div>
+
+        <div class="chat-workspace" id="projectChat">
+            <div class="chat-introduction" id="chatIntroduction">
+                <p class="panel-kicker">A closer look at the code</p>
+                <h3>What would you like to know?</h3>
+                <p>Ask about the Java backend, the browser interface or how billing works. No technical background needed.</p>
+                <div aria-label="Suggested questions" class="chat-suggestions">
+                    <button type="button">Give me a quick tour of the project</button>
+                    <button type="button">How is the system architected?</button>
+                    <button type="button">How do subscriptions and payments work?</button>
+                    <button type="button">What is implemented, and what is still missing?</button>
+                </div>
+            </div>
+
+            <div aria-label="Conversation" aria-live="polite" aria-relevant="additions" class="chat-messages" id="chatMessages" role="log" tabindex="0"></div>
+            <p class="chat-status" id="chatStatus" role="status"></p>
+            <div class="chat-error" hidden id="chatError">
+                <p id="chatErrorMessage" role="alert"></p>
+                <button class="secondary-button" id="retryQuestion" type="button">Try again</button>
+            </div>
+
+            <form class="chat-composer" id="chatForm">
+                <label for="chatQuestion">Your question</label>
+                <textarea aria-describedby="chatHelp chatPrivacy" id="chatQuestion" maxlength="2000" name="question" placeholder="Ask anything about this project…" required rows="3"></textarea>
+                <div class="chat-composer-actions">
+                    <p id="chatHelp">Enter to send · Shift + Enter for a new line</p>
+                    <button class="primary-button" id="sendQuestion" type="submit">Send question <span aria-hidden="true">↗</span></button>
+                </div>
+            </form>
+        </div>
+
+        <div class="chat-footnote">
+            <p id="chatPrivacy">AI answers use both project repositories and may contain mistakes. Messages are sent to OpenAI; please avoid personal or sensitive information. This page keeps the conversation only until you reload or clear it.</p>
+            <p class="chat-references">Explore the source:
+                <a href="https://github.com/nikitsya/Billing-Platform-Frontend" rel="noopener noreferrer" target="_blank">Frontend ↗</a>
+                <a href="https://github.com/nikitsya/Billing-Platform-API" rel="noopener noreferrer" target="_blank">Backend ↗</a>
+            </p>
+        </div>
+        <noscript><p>Enable JavaScript to use the project assistant.</p></noscript>
+    </section>
+</main>
+<script src="../index.js" type="module"></script>
+</body>
+</html>
