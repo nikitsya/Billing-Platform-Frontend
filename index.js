@@ -4,7 +4,7 @@ import {initialiseCustomers} from "./js/customers.js"
 import {initialiseProducts} from "./js/product.js"
 import {initialiseSubscriptions} from "./js/subscriptions.js"
 import {initialisePayments} from "./js/payments.js"
-import {initialiseProjectChat} from "./js/project-chat.js"
+import {initialiseProjectChat} from "./js/project-chat.js?v=20261125-svg-arrows"
 
 initialiseSidebar()
 initialisePing()

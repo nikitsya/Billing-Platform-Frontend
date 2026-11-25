@@ -51,8 +51,7 @@
 }
 
 .chat-suggestions button::after,
-.chat-composer .primary-button::after,
-.chat-references a::after {
+.chat-composer .primary-button::after {
     content: "";
     display: inline-block;
     width: 1em;
@@ -215,11 +214,6 @@
     margin-left: 12px;
     color: var(--green-dark);
     text-underline-offset: 3px;
-}
-
-.chat-references a::after {
-    margin-left: 0.25em;
-    vertical-align: -0.12em;
 }
 
 .chat-section :focus-visible {
