@@ -1,5 +1,5 @@
 import {initialisePing} from "./js/ping.js"
-import {initialiseSidebar} from "./js/sidebar.js"
+import {initialiseSidebar} from "./js/sidebar.js?v=20261125-mobile-menu"
 import {initialiseCustomers} from "./js/customers.js"
 import {initialiseProducts} from "./js/product.js"
 import {initialiseSubscriptions} from "./js/subscriptions.js"

@@ -89,6 +89,15 @@ button {
     font-size: 1.1rem;
 }
 
+.nav-toggle {
+    display: none;
+}
+
+.sidebar :focus-visible {
+    outline: 2px solid var(--surface);
+    outline-offset: 3px;
+}
+
 nav {
     display: grid;
     gap: 4px;
@@ -886,7 +895,7 @@ select:focus-visible {
         position: sticky;
         top: 0;
         display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         width: 100%;
         padding: 10px 14px;
@@ -895,7 +904,8 @@ select:focus-visible {
     }
 
     .brand {
-        font-size: 0;
+        width: fit-content;
+        font-size: 0.8rem;
     }
 
     .brand-mark {
@@ -904,32 +914,84 @@ select:focus-visible {
         font-size: 0.9rem;
     }
 
-    nav {
-        display: flex;
-        justify-content: flex-start;
-        gap: 2px;
-        margin: 0;
-        min-width: 0;
-        overflow-x: auto;
+    .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 44px;
+        padding: 10px 12px;
+        color: var(--surface);
+        background: transparent;
+        border: 1px solid #47765b;
+        border-radius: 0;
+        font-size: 0.8rem;
+        font-weight: 750;
     }
 
-    .nav-link {
+    .nav-toggle:hover,
+    .nav-toggle[aria-expanded="true"] {
+        background: #115431;
+        border-color: var(--surface);
+    }
+
+    .nav-toggle-icon {
+        position: relative;
         display: block;
-        flex-shrink: 0;
-        min-height: auto;
-        padding: 10px 8px;
-        border-left: 0;
-        border-bottom: 2px solid transparent;
-        font-size: 0.68rem;
+        width: 20px;
+        height: 16px;
     }
 
-    .nav-link span {
+    .nav-toggle-icon span {
+        position: absolute;
+        left: 0;
+        width: 20px;
+        height: 2px;
+        background: currentColor;
+        transition: transform 140ms ease, opacity 140ms ease;
+    }
+
+    .nav-toggle-icon span:nth-child(1) {
+        top: 0;
+    }
+
+    .nav-toggle-icon span:nth-child(2) {
+        top: 7px;
+    }
+
+    .nav-toggle-icon span:nth-child(3) {
+        top: 14px;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle-icon span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .sidebar nav {
+        position: absolute;
+        inset: 100% 0 auto;
         display: none;
+        gap: 4px;
+        max-height: calc(100svh - 68px);
+        margin: 0;
+        padding: 12px 14px 16px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        background: var(--green-dark);
+        border-bottom: 4px solid var(--red);
+        box-shadow: 0 12px 20px rgb(19 37 29 / 18%);
     }
 
-    .nav-link:hover,
-    .nav-link.is-active {
-        border-bottom-color: var(--red);
+    .sidebar.is-menu-open nav {
+        display: grid;
     }
 
     .health-check {

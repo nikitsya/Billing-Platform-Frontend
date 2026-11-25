@@ -45,12 +45,64 @@ export function initialiseSidebar() {
     }
 
     const activePage = sidebar.dataset.activePage
-    sidebar.replaceChildren(createBrand(), createNavigation(activePage), createHealthCheck())
-    const navigation = sidebar.querySelector("nav")
-    const activeLink = navigation.querySelector("[aria-current='page']")
-    if (activeLink) {
-        navigation.scrollLeft = activeLink.offsetLeft - navigation.offsetLeft
+    const toggle = createMenuToggle()
+    const navigation = createNavigation(activePage)
+    const mobileLayout = window.matchMedia("(max-width: 760px)")
+    sidebar.replaceChildren(createBrand(), toggle, navigation, createHealthCheck())
+
+    function setMenuOpen(open) {
+        sidebar.classList.toggle("is-menu-open", open)
+        toggle.setAttribute("aria-expanded", String(open))
+        toggle.ariaLabel = open ? "Close navigation menu" : "Open navigation menu"
     }
+
+    toggle.addEventListener("click", () => {
+        setMenuOpen(toggle.getAttribute("aria-expanded") !== "true")
+    })
+    navigation.addEventListener("click", event => {
+        if (event.target.closest("a")) setMenuOpen(false)
+    })
+    document.addEventListener("click", event => {
+        if (!sidebar.contains(event.target)) setMenuOpen(false)
+    })
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+            setMenuOpen(false)
+            toggle.focus()
+        }
+    })
+    sidebar.addEventListener("focusout", event => {
+        if (!sidebar.contains(event.relatedTarget)) setMenuOpen(false)
+    })
+    mobileLayout.addEventListener("change", () => {
+        const focused = document.activeElement
+        setMenuOpen(false)
+        if (mobileLayout.matches && navigation.contains(focused)) {
+            toggle.focus()
+        } else if (!mobileLayout.matches && focused === toggle) {
+            navigation.querySelector("[aria-current='page']")?.focus()
+        }
+    })
+}
+
+function createMenuToggle() {
+    const button = document.createElement("button")
+    button.className = "nav-toggle"
+    button.type = "button"
+    button.ariaLabel = "Open navigation menu"
+    button.setAttribute("aria-expanded", "false")
+    button.setAttribute("aria-controls", "dashboardNavigation")
+
+    const label = document.createElement("span")
+    label.textContent = "Menu"
+
+    const icon = document.createElement("span")
+    icon.className = "nav-toggle-icon"
+    icon.setAttribute("aria-hidden", "true")
+    icon.append(document.createElement("span"), document.createElement("span"), document.createElement("span"))
+
+    button.append(label, icon)
+    return button
 }
 
 function createBrand() {
@@ -72,6 +124,7 @@ function createBrand() {
 
 function createNavigation(activePage) {
     const navigation = document.createElement("nav")
+    navigation.id = "dashboardNavigation"
     navigation.ariaLabel = "Dashboard pages"
 
     navItems.forEach(item => {
