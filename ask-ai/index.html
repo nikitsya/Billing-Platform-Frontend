@@ -36,7 +36,8 @@
             <div class="chat-introduction" id="chatIntroduction">
                 <p class="panel-kicker">A closer look at the code</p>
                 <h3>What would you like to know?</h3>
-                <p>Ask about the Java backend, the browser interface or how billing works. No technical background needed.</p>
+                <p>Ask about the Java backend, the browser interface or how billing works. No technical background
+                    needed.</p>
                 <div aria-label="Suggested questions" class="chat-suggestions">
                     <button type="button">Give me a quick tour of the project</button>
                     <button type="button">How is the system architected?</button>
@@ -45,7 +46,8 @@
                 </div>
             </div>
 
-            <div aria-label="Conversation" aria-live="polite" aria-relevant="additions" class="chat-messages" id="chatMessages" role="log" tabindex="0"></div>
+            <div aria-label="Conversation" aria-live="polite" aria-relevant="additions" class="chat-messages"
+                 id="chatMessages" role="log" tabindex="0"></div>
             <p class="chat-status" id="chatStatus" role="status"></p>
             <div class="chat-error" hidden id="chatError">
                 <p id="chatErrorMessage" role="alert"></p>
@@ -54,19 +56,25 @@
 
             <form class="chat-composer" id="chatForm">
                 <label for="chatQuestion">Your question</label>
-                <textarea aria-describedby="chatHelp chatPrivacy" id="chatQuestion" maxlength="2000" name="question" placeholder="Ask anything about this project…" required rows="3"></textarea>
+                <textarea aria-describedby="chatHelp chatPrivacy" id="chatQuestion" maxlength="2000" name="question"
+                          placeholder="Ask anything about this project…" required rows="3"></textarea>
                 <div class="chat-composer-actions">
                     <p id="chatHelp">Enter to send · Shift + Enter for a new line</p>
-                    <button class="primary-button" id="sendQuestion" type="submit">Send question <span aria-hidden="true">↗</span></button>
+                    <button class="primary-button" id="sendQuestion" type="submit">Send question <span
+                            aria-hidden="true">↗</span></button>
                 </div>
             </form>
         </div>
 
         <div class="chat-footnote">
-            <p id="chatPrivacy">AI answers use both project repositories and may contain mistakes. Messages are sent to OpenAI; please avoid personal or sensitive information. This page keeps the conversation only until you reload or clear it.</p>
+            <p id="chatPrivacy">AI answers use both project repositories and may contain mistakes. Messages are sent to
+                OpenAI; please avoid personal or sensitive information. This page keeps the conversation only until you
+                reload or clear it.</p>
             <p class="chat-references">Explore the source:
-                <a href="https://github.com/nikitsya/Billing-Platform-Frontend" rel="noopener noreferrer" target="_blank">Frontend ↗</a>
-                <a href="https://github.com/nikitsya/Billing-Platform-API" rel="noopener noreferrer" target="_blank">Backend ↗</a>
+                <a href="https://github.com/nikitsya/Billing-Platform-Frontend" rel="noopener noreferrer"
+                   target="_blank">Frontend ↗</a>
+                <a href="https://github.com/nikitsya/Billing-Platform-API" rel="noopener noreferrer" target="_blank">Backend
+                    ↗</a>
             </p>
         </div>
         <noscript><p>Enable JavaScript to use the project assistant.</p></noscript>
