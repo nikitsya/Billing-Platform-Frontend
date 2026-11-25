@@ -79,7 +79,7 @@ export function initialiseProjectChat() {
         retry.disabled = value
         suggestions.forEach(button => button.disabled = value)
         form.setAttribute("aria-busy", String(value))
-        send.textContent = value ? "Thinking…" : "Send question ↗"
+        send.textContent = value ? "Thinking…" : "Send question"
         status.textContent = value ? "Reading the project source… The first reply may take a little longer." : ""
     }
 
